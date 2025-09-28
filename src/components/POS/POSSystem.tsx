@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { menuData, shopInfo } from '@/data/menu';
+import { useSupabaseReceipts } from '@/hooks/useSupabaseReceipts';
 import { CartItem, Receipt, POSState } from '@/types/pos';
 import { CategoryCard } from './CategoryCard';
 import { MenuItem } from './MenuItem';
@@ -9,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ArrowLeft, Search, Store } from 'lucide-react';
+import { ArrowLeft, Search, Store, BarChart3 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import bannerImage from '@/assets/zam-zam-banner.jpg';
 
@@ -22,6 +23,7 @@ export const POSSystem = () => {
   });
 
   const [searchTerm, setSearchTerm] = useState('');
+  const { saveReceipt } = useSupabaseReceipts();
 
   const selectedCategoryData = menuData.find(cat => cat.id === state.selectedCategory);
 
@@ -104,7 +106,7 @@ export const POSSystem = () => {
     });
   };
 
-  const generateReceipt = () => {
+  const generateReceipt = async () => {
     if (state.cart.length === 0) {
       toast({
         title: "Empty Cart",
@@ -121,6 +123,9 @@ export const POSSystem = () => {
       total: state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
       date: new Date()
     };
+
+    // Save to database
+    await saveReceipt(receipt);
 
     setState(prev => ({
       ...prev,
@@ -161,9 +166,20 @@ export const POSSystem = () => {
                 <p className="font-urdu text-xl opacity-90 drop-shadow-md">{shopInfo.nameUrdu}</p>
               </div>
             </div>
-            <div className="text-right text-sm opacity-90 bg-black/20 backdrop-blur-sm p-3 rounded-lg">
-              <p className="font-semibold">Phone: {shopInfo.phone}</p>
-              <p className="font-urdu">{shopInfo.addressUrdu}</p>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/20"
+                onClick={() => window.open('/reports', '_blank')}
+              >
+                <BarChart3 className="h-4 w-4 mr-2" />
+                Reports
+              </Button>
+              <div className="text-right text-sm opacity-90 bg-black/20 backdrop-blur-sm p-3 rounded-lg">
+                <p className="font-semibold">Phone: {shopInfo.phone}</p>
+                <p className="font-urdu">{shopInfo.addressUrdu}</p>
+              </div>
             </div>
           </div>
         </div>
