@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Receipt } from '@/types/pos';
 import { toast } from '@/hooks/use-toast';
 
@@ -23,6 +23,11 @@ export const useSupabaseReceipts = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const saveReceipt = async (receipt: Receipt) => {
+    if (!isSupabaseConfigured || !supabase) {
+      console.log('Supabase not configured - receipt saved locally only');
+      return;
+    }
+
     try {
       setIsLoading(true);
       const { error } = await supabase
@@ -56,6 +61,10 @@ export const useSupabaseReceipts = () => {
   };
 
   const getDailySales = async (date: string): Promise<SalesAnalytics> => {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase not configured');
+    }
+
     try {
       const startDate = new Date(date);
       startDate.setHours(0, 0, 0, 0);
@@ -79,6 +88,10 @@ export const useSupabaseReceipts = () => {
   };
 
   const getMonthlySales = async (year: number, month: number): Promise<SalesAnalytics> => {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase not configured');
+    }
+
     try {
       const startDate = new Date(year, month - 1, 1);
       const endDate = new Date(year, month, 0, 23, 59, 59);
@@ -137,6 +150,7 @@ export const useSupabaseReceipts = () => {
     saveReceipt,
     getDailySales,
     getMonthlySales,
-    isLoading
+    isLoading,
+    isSupabaseConfigured
   };
 };
