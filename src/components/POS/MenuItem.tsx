@@ -62,7 +62,7 @@ export const MenuItem = ({ item, onAddToCart, onRemoveFromCart, cartQuantity }: 
                       className="font-urdu"
                     >
                       {size === 'small' ? 'چھوٹا' : size === 'medium' ? 'درمیانہ' : 'بڑا'}
-                      <span className="ml-1">Rs.{price}</span>
+                      <span className="ml-1">PKR {price}</span>
                     </Button>
                   ))}
                 </div>
@@ -70,7 +70,7 @@ export const MenuItem = ({ item, onAddToCart, onRemoveFromCart, cartQuantity }: 
             )}
             
             <Badge variant="secondary" className="text-lg font-bold">
-              Rs. {currentPrice}
+              PKR {currentPrice}
             </Badge>
           </div>
         </div>

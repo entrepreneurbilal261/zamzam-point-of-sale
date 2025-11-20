@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar, TrendingUp, ShoppingBag, Crown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,50 +11,20 @@ export const DailySales = () => {
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [analytics, setAnalytics] = useState<SalesAnalytics | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { getDailySales, isSupabaseConfigured } = useSupabaseReceipts();
+  const { getDailySales } = useSupabaseReceipts();
 
   const fetchDailySales = async () => {
-    if (!isSupabaseConfigured) {
-      return;
-    }
     setIsLoading(true);
     const data = await getDailySales(selectedDate);
     setAnalytics(data);
     setIsLoading(false);
   };
 
-  if (!isSupabaseConfigured) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-4 mb-6">
-          <Calendar className="h-6 w-6 text-primary" />
-          <h2 className="text-2xl font-bold">Daily Sales Report</h2>
-          <p className="font-urdu text-lg text-muted-foreground">یومیہ فروخت رپورٹ</p>
-        </div>
-        
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center py-8">
-              <Calendar className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Supabase Not Connected</h3>
-              <p className="text-muted-foreground mb-2">
-                To view sales reports, you need to connect your project to Supabase first.
-              </p>
-              <p className="font-urdu text-muted-foreground mb-4">
-                فروخت کی رپورٹس دیکھنے کے لیے پہلے اپنے پروجیکٹ کو Supabase سے جوڑیں۔
-              </p>
-              <Button 
-                onClick={() => window.open('https://docs.lovable.dev/integrations/supabase/', '_blank')}
-                variant="outline"
-              >
-                Learn How to Connect Supabase
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // Auto-load today's data on mount
+  useEffect(() => {
+    fetchDailySales();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -95,7 +65,7 @@ export const DailySales = () => {
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">₹{analytics.totalRevenue}</div>
+                <div className="text-2xl font-bold text-green-600">PKR {analytics.totalRevenue}</div>
                 <p className="font-urdu text-sm text-muted-foreground">کل آمدن</p>
               </CardContent>
             </Card>
@@ -147,7 +117,7 @@ export const DailySales = () => {
                         <div className="font-urdu text-sm text-muted-foreground">{item.nameUrdu}</div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold">₹{item.revenue}</div>
+                        <div className="font-bold">PKR {item.revenue}</div>
                         <Badge variant="outline">{item.quantity} qty</Badge>
                       </div>
                     </div>

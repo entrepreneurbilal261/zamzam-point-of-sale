@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CalendarDays, TrendingUp, ShoppingBag, Crown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ export const MonthlySales = () => {
   const [selectedMonth, setSelectedMonth] = useState(currentMonth.toString());
   const [analytics, setAnalytics] = useState<SalesAnalytics | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { getMonthlySales, isSupabaseConfigured } = useSupabaseReceipts();
+  const { getMonthlySales } = useSupabaseReceipts();
 
   const months = [
     { value: '1', label: 'January', urdu: 'جنوری' },
@@ -34,49 +34,19 @@ export const MonthlySales = () => {
   const years = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i);
 
   const fetchMonthlySales = async () => {
-    if (!isSupabaseConfigured) {
-      return;
-    }
     setIsLoading(true);
     const data = await getMonthlySales(parseInt(selectedYear), parseInt(selectedMonth));
     setAnalytics(data);
     setIsLoading(false);
   };
 
-  const selectedMonthLabel = months.find(m => m.value === selectedMonth);
+  // Auto-load current month's data on mount
+  useEffect(() => {
+    fetchMonthlySales();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  if (!isSupabaseConfigured) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-4 mb-6">
-          <CalendarDays className="h-6 w-6 text-primary" />
-          <h2 className="text-2xl font-bold">Monthly Sales Report</h2>
-          <p className="font-urdu text-lg text-muted-foreground">ماہانہ فروخت رپورٹ</p>
-        </div>
-        
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center py-8">
-              <CalendarDays className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Supabase Not Connected</h3>
-              <p className="text-muted-foreground mb-2">
-                To view sales reports, you need to connect your project to Supabase first.
-              </p>
-              <p className="font-urdu text-muted-foreground mb-4">
-                فروخت کی رپورٹس دیکھنے کے لیے پہلے اپنے پروجیکٹ کو Supabase سے جوڑیں۔
-              </p>
-              <Button 
-                onClick={() => window.open('https://docs.lovable.dev/integrations/supabase/', '_blank')}
-                variant="outline"
-              >
-                Learn How to Connect Supabase
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const selectedMonthLabel = months.find(m => m.value === selectedMonth);
 
   return (
     <div className="space-y-6">
@@ -146,7 +116,7 @@ export const MonthlySales = () => {
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">₹{analytics.totalRevenue}</div>
+                <div className="text-2xl font-bold text-green-600">PKR {analytics.totalRevenue}</div>
                 <p className="font-urdu text-sm text-muted-foreground">کل آمدن</p>
               </CardContent>
             </Card>
@@ -198,7 +168,7 @@ export const MonthlySales = () => {
                         <div className="font-urdu text-sm text-muted-foreground">{item.nameUrdu}</div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold">₹{item.revenue}</div>
+                        <div className="font-bold">PKR {item.revenue}</div>
                         <Badge variant="outline">{item.quantity} qty</Badge>
                       </div>
                     </div>

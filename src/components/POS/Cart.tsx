@@ -104,9 +104,9 @@ export const Cart = ({
                         </Button>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold">Rs. {item.price * item.quantity}</p>
+                        <p className="font-bold">PKR {item.price * item.quantity}</p>
                         <p className="text-xs text-muted-foreground">
-                          Rs. {item.price} each
+                          PKR {item.price} each
                         </p>
                       </div>
                     </div>
@@ -118,7 +118,7 @@ export const Cart = ({
             <div className="mt-4 pt-4 border-t">
               <div className="flex justify-between items-center mb-4">
                 <span className="font-bold text-lg font-urdu">کل رقم:</span>
-                <span className="font-bold text-xl text-primary">Rs. {total}</span>
+                <span className="font-bold text-xl text-primary">PKR {total}</span>
               </div>
               
               <div className="space-y-2">

@@ -1,17 +1,22 @@
 import { useState } from 'react';
-import { ArrowLeft, Calendar, CalendarDays } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Calendar, CalendarDays, Receipt, Store } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DailySales } from '@/components/Reports/DailySales';
 import { MonthlySales } from '@/components/Reports/MonthlySales';
+import { TodayOrders } from '@/components/Reports/TodayOrders';
 
-type ReportType = 'overview' | 'daily' | 'monthly';
+type ReportType = 'overview' | 'today' | 'daily' | 'monthly';
 
 const Reports = () => {
-  const [currentView, setCurrentView] = useState<ReportType>('overview');
+  const navigate = useNavigate();
+  const [currentView, setCurrentView] = useState<ReportType>('today'); // Default to today's orders
 
   const renderContent = () => {
     switch (currentView) {
+      case 'today':
+        return <TodayOrders />;
       case 'daily':
         return <DailySales />;
       case 'monthly':
@@ -24,7 +29,27 @@ const Reports = () => {
               <p className="font-urdu text-xl text-muted-foreground mt-2">فروخت کی رپورٹس</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setCurrentView('today')}>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <Receipt className="h-8 w-8 text-primary" />
+                    <div>
+                      <CardTitle className="text-xl">Today's Orders</CardTitle>
+                      <p className="font-urdu text-muted-foreground">آج کے آرڈرز</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    View all orders placed today with detailed item breakdown.
+                  </p>
+                  <p className="font-urdu text-sm text-muted-foreground mt-2">
+                    آج کے تمام آرڈرز تفصیلی اشیاء کی فہرست کے ساتھ دیکھیں۔
+                  </p>
+                </CardContent>
+              </Card>
+
               <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setCurrentView('daily')}>
                 <CardHeader>
                   <div className="flex items-center gap-3">
@@ -73,16 +98,27 @@ const Reports = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
-        {currentView !== 'overview' && (
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            {currentView !== 'overview' && (
+              <Button 
+                variant="outline" 
+                onClick={() => setCurrentView('overview')}
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Reports
+              </Button>
+            )}
+          </div>
           <Button 
-            variant="outline" 
-            onClick={() => setCurrentView('overview')}
-            className="mb-6"
+            variant="default" 
+            onClick={() => navigate('/')}
+            className="bg-primary hover:bg-primary/90"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Reports
+            <Store className="h-4 w-4 mr-2" />
+            Back to POS
           </Button>
-        )}
+        </div>
         
         {renderContent()}
       </div>

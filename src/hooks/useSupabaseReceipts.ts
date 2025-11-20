@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { localDatabase } from '@/lib/localDatabase';
 import { Receipt } from '@/types/pos';
 import { toast } from '@/hooks/use-toast';
 
@@ -19,28 +19,40 @@ export interface SalesAnalytics {
   }>;
 }
 
-export const useSupabaseReceipts = () => {
+export const useLocalReceipts = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    // Initialize database on mount
+    localDatabase.init()
+      .then(() => setIsInitialized(true))
+      .catch((error) => {
+        console.error('Failed to initialize database:', error);
+        toast({
+          title: "Database Error",
+          description: "Failed to initialize local database",
+          variant: "destructive",
+          duration: 3000,
+        });
+      });
+  }, []);
 
   const saveReceipt = async (receipt: Receipt) => {
-    if (!isSupabaseConfigured || !supabase) {
-      console.log('Supabase not configured - receipt saved locally only');
-      return;
+    if (!isInitialized) {
+      await localDatabase.init();
+      setIsInitialized(true);
     }
 
     try {
       setIsLoading(true);
-      const { error } = await supabase
-        .from('receipts')
-        .insert({
-          receipt_number: receipt.id,
-          items: receipt.items,
-          total: receipt.total,
-          date: receipt.date.toISOString(),
-          customer_name: receipt.customerName
-        });
-
-      if (error) throw error;
+      await localDatabase.saveReceipt({
+        id: receipt.id,
+        items: receipt.items,
+        total: receipt.total,
+        date: receipt.date,
+        customerName: receipt.customerName
+      });
 
       toast({
         title: "Receipt Saved",
@@ -61,8 +73,9 @@ export const useSupabaseReceipts = () => {
   };
 
   const getDailySales = async (date: string): Promise<SalesAnalytics> => {
-    if (!isSupabaseConfigured || !supabase) {
-      throw new Error('Supabase not configured');
+    if (!isInitialized) {
+      await localDatabase.init();
+      setIsInitialized(true);
     }
 
     try {
@@ -71,16 +84,8 @@ export const useSupabaseReceipts = () => {
       const endDate = new Date(date);
       endDate.setHours(23, 59, 59, 999);
 
-      const { data, error } = await supabase
-        .from('receipts')
-        .select('*')
-        .gte('date', startDate.toISOString())
-        .lte('date', endDate.toISOString())
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      return calculateAnalytics(data || []);
+      const receipts = await localDatabase.getReceiptsByDateRange(startDate, endDate);
+      return calculateAnalytics(receipts);
     } catch (error) {
       console.error('Error fetching daily sales:', error);
       return { totalRevenue: 0, totalOrders: 0, mostSoldItem: null, items: [] };
@@ -88,27 +93,31 @@ export const useSupabaseReceipts = () => {
   };
 
   const getMonthlySales = async (year: number, month: number): Promise<SalesAnalytics> => {
-    if (!isSupabaseConfigured || !supabase) {
-      throw new Error('Supabase not configured');
+    if (!isInitialized) {
+      await localDatabase.init();
+      setIsInitialized(true);
     }
 
     try {
-      const startDate = new Date(year, month - 1, 1);
-      const endDate = new Date(year, month, 0, 23, 59, 59);
-
-      const { data, error } = await supabase
-        .from('receipts')
-        .select('*')
-        .gte('date', startDate.toISOString())
-        .lte('date', endDate.toISOString())
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      return calculateAnalytics(data || []);
+      const receipts = await localDatabase.getMonthlyReceipts(year, month);
+      return calculateAnalytics(receipts);
     } catch (error) {
       console.error('Error fetching monthly sales:', error);
       return { totalRevenue: 0, totalOrders: 0, mostSoldItem: null, items: [] };
+    }
+  };
+
+  const getTodayReceipts = async () => {
+    if (!isInitialized) {
+      await localDatabase.init();
+      setIsInitialized(true);
+    }
+
+    try {
+      return await localDatabase.getTodayReceipts();
+    } catch (error) {
+      console.error('Error fetching today receipts:', error);
+      return [];
     }
   };
 
@@ -120,7 +129,8 @@ export const useSupabaseReceipts = () => {
     const itemStats: Record<string, { name: string; nameUrdu: string; quantity: number; revenue: number }> = {};
 
     receipts.forEach(receipt => {
-      receipt.items.forEach((item: any) => {
+      const items = typeof receipt.items === 'string' ? JSON.parse(receipt.items) : receipt.items;
+      items.forEach((item: any) => {
         const key = item.name;
         if (!itemStats[key]) {
           itemStats[key] = {
@@ -150,7 +160,11 @@ export const useSupabaseReceipts = () => {
     saveReceipt,
     getDailySales,
     getMonthlySales,
+    getTodayReceipts,
     isLoading,
-    isSupabaseConfigured
+    isInitialized
   };
 };
+
+// Keep the old export name for backward compatibility
+export const useSupabaseReceipts = useLocalReceipts;

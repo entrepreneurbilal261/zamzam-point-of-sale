@@ -3,7 +3,8 @@ import { shopInfo } from "@/data/menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { PrinterIcon, Download, X } from "lucide-react";
+import { PrinterIcon, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface ReceiptModalProps {
   receipt: Receipt | null;
@@ -12,11 +13,30 @@ interface ReceiptModalProps {
 }
 
 export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) => {
-  if (!receipt) return null;
+  const printRef = useRef<HTMLDivElement>(null);
+  const hasPrintedRef = useRef(false);
+
+  useEffect(() => {
+    // Auto-print when modal opens
+    if (isOpen && receipt && !hasPrintedRef.current) {
+      // Small delay to ensure content is rendered
+      setTimeout(() => {
+        window.print();
+        hasPrintedRef.current = true;
+      }, 500);
+    }
+    
+    // Reset print flag when modal closes
+    if (!isOpen) {
+      hasPrintedRef.current = false;
+    }
+  }, [isOpen, receipt]);
 
   const handlePrint = () => {
     window.print();
   };
+
+  if (!receipt) return null;
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-PK', {
@@ -40,7 +60,7 @@ export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) =>
           </div>
         </DialogHeader>
         
-        <div className="receipt-content bg-white text-black p-6 rounded-lg">
+        <div ref={printRef} className="receipt-content bg-white text-black p-6 rounded-lg print-receipt">
           {/* Header */}
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold bg-gradient-hero bg-clip-text text-transparent">
@@ -86,9 +106,9 @@ export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) =>
                   </div>
                   <div className="text-right ml-4">
                     <p className="text-sm">
-                      {item.quantity} x Rs.{item.price}
+                      {item.quantity} x PKR {item.price}
                     </p>
-                    <p className="font-bold">Rs.{item.quantity * item.price}</p>
+                    <p className="font-bold">PKR {item.quantity * item.price}</p>
                   </div>
                 </div>
               </div>
@@ -101,7 +121,7 @@ export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) =>
           <div className="text-center">
             <div className="flex justify-between items-center text-lg font-bold">
               <span className="font-urdu">کل رقم:</span>
-              <span className="text-primary">Rs. {receipt.total}</span>
+              <span className="text-primary">PKR {receipt.total}</span>
             </div>
           </div>
 
@@ -127,21 +147,73 @@ export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) =>
         </div>
 
         <style>
-          {`@media print {
-            body * {
-              visibility: hidden;
+          {`
+            @media print {
+              @page {
+                size: 80mm auto;
+                margin: 0;
+              }
+              
+              body * {
+                visibility: hidden;
+              }
+              
+              .print-receipt,
+              .print-receipt * {
+                visibility: visible;
+              }
+              
+              .print-receipt {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 80mm;
+                max-width: 80mm;
+                padding: 10mm;
+                margin: 0;
+                background: white;
+                font-size: 12pt;
+                line-height: 1.4;
+              }
+              
+              .print-receipt h1 {
+                font-size: 18pt;
+                margin-bottom: 5mm;
+              }
+              
+              .print-receipt h2,
+              .print-receipt .text-xl {
+                font-size: 14pt;
+              }
+              
+              .print-receipt .text-sm {
+                font-size: 10pt;
+              }
+              
+              .print-receipt .text-xs {
+                font-size: 8pt;
+              }
+              
+              .print-receipt button,
+              .print-receipt [role="dialog"] > *:not(.print-receipt) {
+                display: none !important;
+              }
+              
+              /* Hide dialog overlay in print */
+              [role="dialog"],
+              [data-radix-dialog-content] {
+                position: static !important;
+                transform: none !important;
+                max-width: 80mm !important;
+                width: 80mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+                background: white !important;
+              }
             }
-            .receipt-content,
-            .receipt-content * {
-              visibility: visible;
-            }
-            .receipt-content {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-            }
-          }`}
+          `}
         </style>
       </DialogContent>
     </Dialog>

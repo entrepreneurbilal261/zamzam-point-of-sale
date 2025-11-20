@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { menuData, shopInfo } from '@/data/menu';
 import { useSupabaseReceipts } from '@/hooks/useSupabaseReceipts';
 import { CartItem, Receipt, POSState } from '@/types/pos';
@@ -15,6 +16,7 @@ import { toast } from '@/hooks/use-toast';
 import bannerImage from '@/assets/zam-zam-banner.jpg';
 
 export const POSSystem = () => {
+  const navigate = useNavigate();
   const [state, setState] = useState<POSState>({
     cart: [],
     selectedCategory: null,
@@ -171,7 +173,7 @@ export const POSSystem = () => {
                 variant="secondary"
                 size="sm"
                 className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/20"
-                onClick={() => window.open('/reports', '_blank')}
+                onClick={() => navigate('/reports')}
               >
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Reports
