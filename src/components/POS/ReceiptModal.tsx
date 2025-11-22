@@ -100,7 +100,10 @@ export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) =>
                     {item.size && (
                       <p className="text-xs text-gray-500">
                         Size: {item.size === 'small' ? 'چھوٹا' : 
-                               item.size === 'medium' ? 'درمیانہ' : 'بڑا'}
+                               item.size === 'medium' ? 'درمیانہ' : 
+                               item.size === 'large' ? 'بڑا' :
+                               item.size === 'glass' ? 'گلاس' :
+                               item.size === 'mug' ? 'مگ' : item.size}
                       </p>
                     )}
                   </div>

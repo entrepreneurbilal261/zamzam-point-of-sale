@@ -1,4 +1,4 @@
-// Zam Zam Ice Bar Menu Data
+// Zam Zam Pizza Hut Menu Data
 export interface MenuItem {
   id: string;
   name: string;
@@ -24,173 +24,249 @@ export interface MenuCategory {
 
 export const menuData: MenuCategory[] = [
   {
+    id: 'pizza-traditional',
+    name: 'Traditional Flavor Pizza',
+    nameUrdu: 'روایتی ذائقہ پیزا',
+    icon: '🍕',
+    color: 'bg-gradient-to-br from-red-500 to-orange-600',
+    items: [
+      { id: 'chicken-tikka', name: 'Chicken Tikka Pizza', nameUrdu: 'چکن ٹکا پیزا', category: 'pizza-traditional', sizes: { small: 550, medium: 990, large: 1350 } },
+      { id: 'chicken-fajita', name: 'Chicken Fajita Pizza', nameUrdu: 'چکن فجیتا پیزا', category: 'pizza-traditional', sizes: { small: 550, medium: 990, large: 1350 } },
+      { id: 'vegetarian', name: 'Vegetarian Pizza', nameUrdu: 'سبزی پیزا', category: 'pizza-traditional', sizes: { small: 550, medium: 990, large: 1350 } },
+      { id: 'bar-b-q', name: 'Bar B Q Pizza', nameUrdu: 'بار بی کیو پیزا', category: 'pizza-traditional', sizes: { small: 550, medium: 990, large: 1350 } },
+      { id: 'hot-spicy', name: 'Hot and Spicy Pizza', nameUrdu: 'ہاٹ اینڈ اسپائسی پیزا', category: 'pizza-traditional', sizes: { small: 550, medium: 990, large: 1350 } },
+      { id: 'kabab-crust', name: 'Kabab Crust Pizza', nameUrdu: 'کباب کرسٹ پیزا', category: 'pizza-traditional', sizes: { small: 550, medium: 990, large: 1350 } }
+    ]
+  },
+  {
+    id: 'pizza-signature',
+    name: 'Zam Zam Signature Flavor',
+    nameUrdu: 'زم زم دستخط ذائقہ',
+    icon: '⭐',
+    color: 'bg-gradient-to-br from-purple-500 to-pink-600',
+    items: [
+      { id: 'smoky-pizza', name: 'Smoky Pizza', nameUrdu: 'سموکی پیزا', category: 'pizza-signature', sizes: { medium: 1200, large: 1630 } },
+      { id: 'sultani-pizza', name: 'Sultani Pizza', nameUrdu: 'سلطانی پیزا', category: 'pizza-signature', sizes: { medium: 1200, large: 1630 } },
+      { id: 'peri-peri', name: 'Peri Peri Pizza', nameUrdu: 'پیری پیری پیزا', category: 'pizza-signature', sizes: { medium: 1200, large: 1630 } },
+      { id: 'cheese-lover', name: 'Cheese Lover Pizza', nameUrdu: 'چیز لوور پیزا', category: 'pizza-signature', sizes: { medium: 1200, large: 1630 } },
+      { id: 'lazania', name: 'Lazania Pizza', nameUrdu: 'لازانیا پیزا', category: 'pizza-signature', sizes: { medium: 1200, large: 1630 } },
+      { id: 'four-in-one', name: '4 In 1 Pizza', nameUrdu: 'چار میں ایک پیزا', category: 'pizza-signature', sizes: { medium: 1200, large: 1630 } }
+    ]
+  },
+  {
+    id: 'pizza-stuffed',
+    name: 'Stuffed Crust Pizza',
+    nameUrdu: 'سٹفڈ کرسٹ پیزا',
+    icon: '🧀',
+    color: 'bg-gradient-to-br from-yellow-500 to-orange-600',
+    items: [
+      { id: 'stuffed-crust', name: 'Stuffed Crust Pizza', nameUrdu: 'سٹفڈ کرسٹ پیزا', category: 'pizza-stuffed', sizes: { medium: 1350, large: 1850 } }
+    ]
+  },
+  {
+    id: 'burgers',
+    name: 'Burger Zone',
+    nameUrdu: 'برگر زون',
+    icon: '🍔',
+    color: 'bg-gradient-to-br from-red-400 to-pink-500',
+    items: [
+      { id: 'zinger', name: 'Zinger (Fries + Coleslaw)', nameUrdu: 'زنگر (فرائز + کول سلاو)', category: 'burgers', price: 350 },
+      { id: 'zinger-cheese', name: 'Zinger Cheese', nameUrdu: 'زنگر چیز', category: 'burgers', price: 450 },
+      { id: 'tower-zinger', name: 'Tower Zinger', nameUrdu: 'ٹاور زنگر', category: 'burgers', price: 500 },
+      { id: 'shami-burger', name: 'Shami Burger', nameUrdu: 'شامی برگر', category: 'burgers', price: 150 },
+      { id: 'chicken-shami', name: 'Chicken Shami Burger', nameUrdu: 'چکن شامی برگر', category: 'burgers', price: 230 },
+      { id: 'chicken-patti', name: 'Chicken Patti Burger', nameUrdu: 'چکن پٹی برگر', category: 'burgers', price: 250 },
+      { id: 'lappeta-burger', name: 'Lappeta Burger', nameUrdu: 'لاپیتا برگر', category: 'burgers', price: 200 }
+    ]
+  },
+  {
+    id: 'appetizers',
+    name: 'Appetizer',
+    nameUrdu: 'اشتہا انگیز',
+    icon: '🍗',
+    color: 'bg-gradient-to-br from-orange-500 to-red-600',
+    items: [
+      { id: 'malaysian-strips', name: 'Malaysian Strips (6 Pcs)', nameUrdu: 'ملائیشین سٹرپس (6 عدد)', category: 'appetizers', price: 600 },
+      { id: 'hot-wings-5', name: 'Hot Wings (5 Pcs)', nameUrdu: 'ہاٹ ونگز (5 عدد)', category: 'appetizers', price: 300 },
+      { id: 'hot-wings-10', name: 'Hot Wings (10 Pcs)', nameUrdu: 'ہاٹ ونگز (10 عدد)', category: 'appetizers', price: 550 },
+      { id: 'oven-baked-5', name: 'Oven Baked Wings (5 Pcs)', nameUrdu: 'اوون بیکڈ ونگز (5 عدد)', category: 'appetizers', price: 300 },
+      { id: 'oven-baked-10', name: 'Oven Baked Wings (10 Pcs)', nameUrdu: 'اوون بیکڈ ونگز (10 عدد)', category: 'appetizers', price: 570 },
+      { id: 'nuggets-5', name: 'Nuggets (5 Pcs)', nameUrdu: 'نگیٹس (5 عدد)', category: 'appetizers', price: 270 },
+      { id: 'nuggets-10', name: 'Nuggets (10 Pcs)', nameUrdu: 'نگیٹس (10 عدد)', category: 'appetizers', price: 490 }
+    ]
+  },
+  {
+    id: 'wraps-shawarma',
+    name: 'Wraps / Shawarma',
+    nameUrdu: 'رپس / شوارما',
+    icon: '🌯',
+    color: 'bg-gradient-to-br from-amber-500 to-orange-600',
+    items: [
+      { id: 'arabic-shwarma', name: 'Arabic Shwarma', nameUrdu: 'عربی شوارما', category: 'wraps-shawarma', price: 400 },
+      { id: 'zinger-shwarma', name: 'Zinger Shwarma', nameUrdu: 'زنگر شوارما', category: 'wraps-shawarma', price: 350 },
+      { id: 'malai-boti', name: 'Malai Boti', nameUrdu: 'ملائی بوٹی', category: 'wraps-shawarma', price: 250 },
+      { id: 'cheese-malai-boti', name: 'Cheese Malai Boti', nameUrdu: 'چیز ملائی بوٹی', category: 'wraps-shawarma', price: 300 },
+      { id: 'chicken-shwarma', name: 'Chicken Shwarma', nameUrdu: 'چکن شوارما', category: 'wraps-shawarma', price: 150 },
+      { id: 'fajita-shwarma', name: 'Fajita Shwarma', nameUrdu: 'فجیتا شوارما', category: 'wraps-shawarma', price: 250 },
+      { id: 'cheese-fajita-shwarma', name: 'Cheese Fajita Shwarma', nameUrdu: 'چیز فجیتا شوارما', category: 'wraps-shawarma', price: 300 }
+    ]
+  },
+  {
+    id: 'pasta',
+    name: 'Pasta',
+    nameUrdu: 'پاستا',
+    icon: '🍝',
+    color: 'bg-gradient-to-br from-red-600 to-pink-700',
+    items: [
+      { id: 'arrabiata', name: 'Arrabiata Pasta', nameUrdu: 'ارابیاتا پاستا', category: 'pasta', sizes: { small: 350, large: 650 } },
+      { id: 'sultani-pasta', name: 'Sultani Pasta', nameUrdu: 'سلطانی پاستا', category: 'pasta', sizes: { small: 350, large: 650 } },
+      { id: 'crunchy-pasta', name: 'Crunchy Pasta', nameUrdu: 'کرنچی پاستا', category: 'pasta', sizes: { small: 350, large: 650 } }
+    ]
+  },
+  {
+    id: 'french-fries',
+    name: 'French Fries',
+    nameUrdu: 'فرنچ فرائز',
+    icon: '🍟',
+    color: 'bg-gradient-to-br from-yellow-400 to-orange-500',
+    items: [
+      { id: 'plain-fries-small', name: 'Plain Fries (Small)', nameUrdu: 'سادہ فرائز (چھوٹا)', category: 'french-fries', price: 250 },
+      { id: 'plain-fries-family', name: 'Plain Fries (Family)', nameUrdu: 'سادہ فرائز (فیملی)', category: 'french-fries', price: 400 },
+      { id: 'masala-fries-small', name: 'Masala Fries (Small)', nameUrdu: 'مسالہ فرائز (چھوٹا)', category: 'french-fries', price: 280 },
+      { id: 'masala-fries-family', name: 'Masala Fries (Family)', nameUrdu: 'مسالہ فرائز (فیملی)', category: 'french-fries', price: 430 },
+      { id: 'loaded-fries', name: 'Loaded Fries', nameUrdu: 'لوڈڈ فرائز', category: 'french-fries', price: 590 }
+    ]
+  },
+  {
+    id: 'beverages',
+    name: 'Beverages',
+    nameUrdu: 'مشروبات',
+    icon: '🥤',
+    color: 'bg-gradient-to-br from-red-500 to-pink-600',
+    items: [
+      { id: 'drink-500ml', name: '500ml Drink', nameUrdu: '500 ملی مشروب', category: 'beverages', price: 120 },
+      { id: 'drink-1ltr', name: '1 Ltr. Drink', nameUrdu: '1 لیٹر مشروب', category: 'beverages', price: 170 },
+      { id: 'drink-1.5ltr', name: '1.5 Ltr. Drink', nameUrdu: '1.5 لیٹر مشروب', category: 'beverages', price: 230 },
+      { id: 'tin-pack', name: 'Tin Pack', nameUrdu: 'ٹن پیک', category: 'beverages', price: 120 }
+    ]
+  },
+  {
     id: 'ice-cream',
     name: 'Ice Cream',
     nameUrdu: 'آئسکریم',
     icon: '🍨',
     color: 'bg-gradient-to-br from-pink-400 to-purple-500',
     items: [
-      { id: 'vanilla', name: 'Vanilla Ice Cream', nameUrdu: 'ونیلا آئسکریم', category: 'ice-cream', price: 150 },
-      { id: 'pista', name: 'Pista Ice Cream', nameUrdu: 'پستہ آئسکریم', category: 'ice-cream', price: 150 },
-      { id: 'strawberry', name: 'Strawberry Ice Cream', nameUrdu: 'اسٹرابیری آئسکریم', category: 'ice-cream', price: 150 },
-      { id: 'chocolate', name: 'Chocolate Ice Cream', nameUrdu: 'چاکلیٹ آئسکریم', category: 'ice-cream', price: 150 },
-      { id: 'orange', name: 'Orange Ice Cream', nameUrdu: 'اورنج آئسکریم', category: 'ice-cream', price: 150 },
-      { id: 'banana', name: 'Banana Ice Cream', nameUrdu: 'بنانا آئسکریم', category: 'ice-cream', price: 150 },
-      { id: 'chocolate-chip', name: 'Chocolate Chip Ice Cream', nameUrdu: 'چاکلیٹ چپ آئسکریم', category: 'ice-cream', price: 150 },
-      { id: 'pineapple', name: 'Pineapple Ice Cream', nameUrdu: 'پائن ایپل آئسکریم', category: 'ice-cream', price: 200 },
-      { id: 'mango', name: 'Mango Ice Cream', nameUrdu: 'منگو آئسکریم', category: 'ice-cream', price: 160 },
-      { id: 'tutti-frutti', name: 'Tutti Frutti Ice Cream', nameUrdu: 'ٹوٹی فروٹی آئسکریم', category: 'ice-cream', price: 250 },
-      { id: 'double-chocolate', name: 'Double Chocolate Ice Cream', nameUrdu: 'ڈبل چاکلیٹ آئسکریم', category: 'ice-cream', price: 200 },
-      { id: 'kulfi', name: 'Kulfi Ice Cream', nameUrdu: 'کلفی آئسکریم', category: 'ice-cream', price: 170 },
-      { id: 'pistachio-kulfi', name: 'Pistachio Kulfi Ice Cream', nameUrdu: 'پستہ کلفی آئسکریم', category: 'ice-cream', price: 180 },
-      { id: 'malai-kulfi', name: 'Malai Kulfi Ice Cream', nameUrdu: 'ملائی کلفی آئسکریم', category: 'ice-cream', price: 150 },
-      { id: 'family-pack', name: 'Family Pack Ice Cream', nameUrdu: 'فیملی پیک آئسکریم', category: 'ice-cream', price: 900 },
-      { id: 'half-family-pack', name: '1/2 Family Pack Ice Cream', nameUrdu: 'نصف فیملی پیک آئسکریم', category: 'ice-cream', price: 450 },
-      { id: 'faloodha-special', name: 'Faloodha Special', nameUrdu: 'فالودہ اسپیشل', category: 'ice-cream', price: 20 }
+      { id: 'mixed-ice-cream', name: 'Mixed Ice Cream', nameUrdu: 'مکس آئسکریم', category: 'ice-cream', price: 130 },
+      { id: 'kulfa', name: 'Kulfa', nameUrdu: 'کلفہ', category: 'ice-cream', price: 130 },
+      { id: 'kulfa-badam', name: 'Kulfa Badam', nameUrdu: 'کلفہ بادام', category: 'ice-cream', price: 180 },
+      { id: 'strawberry', name: 'Strawberry', nameUrdu: 'اسٹرابیری', category: 'ice-cream', price: 130 },
+      { id: 'mango', name: 'Mango', nameUrdu: 'منگو', category: 'ice-cream', price: 130 },
+      { id: 'banana', name: 'Banana', nameUrdu: 'بنانا', category: 'ice-cream', price: 130 },
+      { id: 'chocolate', name: 'Chocolate', nameUrdu: 'چاکلیٹ', category: 'ice-cream', price: 130 },
+      { id: 'pineapple', name: 'Pineapple', nameUrdu: 'پائن ایپل', category: 'ice-cream', price: 130 },
+      { id: 'vanilla', name: 'Vanilla Ice Cream', nameUrdu: 'ونیلا آئسکریم', category: 'ice-cream', price: 130 },
+      { id: 'pista', name: 'Pista Ice Cream', nameUrdu: 'پستہ آئسکریم', category: 'ice-cream', price: 200 },
+      { id: 'tutti-frutti', name: 'Tutti Frutti Jumbo Cup', nameUrdu: 'ٹوٹی فروٹی جمبو کپ', category: 'ice-cream', price: 200 }
     ]
   },
   {
-    id: 'milkshakes',
-    name: 'Milk Shakes',
-    nameUrdu: 'ملک شیک',
+    id: 'ice-cream-milkshake',
+    name: 'Ice Cream Milkshake',
+    nameUrdu: 'آئسکریم ملک شیک',
     icon: '🥤',
     color: 'bg-gradient-to-br from-blue-400 to-cyan-500',
     items: [
-      { id: 'chocolate-shake', name: 'Chocolate Shake', nameUrdu: 'چاکلیٹ شیک', category: 'milkshakes', sizes: { small: 150, medium: 230, large: 300 } },
-      { id: 'banana-shake', name: 'Banana Shake', nameUrdu: 'بنانا شیک', category: 'milkshakes', sizes: { small: 150, medium: 230, large: 300 } },
-      { id: 'strawberry-shake', name: 'Strawberry Shake', nameUrdu: 'اسٹرابیری شیک', category: 'milkshakes', sizes: { small: 180, medium: 270, large: 350 } },
-      { id: 'apple-shake', name: 'Apple Shake', nameUrdu: 'ایپل شیک', category: 'milkshakes', sizes: { small: 150, medium: 230, large: 300 } },
-      { id: 'mango-shake', name: 'Mango Shake', nameUrdu: 'آم شیک', category: 'milkshakes', sizes: { small: 200, medium: 300, large: 400 } },
-      { id: 'vanilla-shake', name: 'Vanilla Shake', nameUrdu: 'ونیلا شیک', category: 'milkshakes', sizes: { small: 240, medium: 360, large: 480 } },
-      { id: 'kulfa-shake', name: 'Kulfa Shake', nameUrdu: 'کلفہ شیک', category: 'milkshakes', sizes: { small: 180, medium: 270, large: 350 } },
-      { id: 'kheer-shake', name: 'Kheer Shake', nameUrdu: 'کھیر شیک', category: 'milkshakes', sizes: { small: 180, medium: 270, large: 350 } },
-      { id: 'dates-shake', name: 'Dates Shake', nameUrdu: 'کھجور شیک', category: 'milkshakes', sizes: { small: 160, medium: 240, large: 320 } },
-      { id: 'coconut-shake', name: 'Coconut Shake', nameUrdu: 'ناریل شیک', category: 'milkshakes', sizes: { small: 250, medium: 370, large: 500 } },
-      { id: 'dry-fruit-shake', name: 'Dry Fruit Shake', nameUrdu: 'ڈرائی فروٹ شیک', category: 'milkshakes', sizes: { small: 300, medium: 450, large: 600 } },
-      { id: 'kashmiri-shake', name: 'Kashmiri Shake', nameUrdu: 'کشمیری شیک', category: 'milkshakes', sizes: { small: 200, medium: 300, large: 400 } },
-      { id: 'sev-shake', name: 'Sev Shake', nameUrdu: 'سیو شیک', category: 'milkshakes', sizes: { small: 200, medium: 300, large: 400 } },
-      { id: 'sitafal-shake', name: 'Sitafal Shake', nameUrdu: 'سیتا پھل شیک', category: 'milkshakes', sizes: { small: 300, medium: 450, large: 600 } },
-      { id: 'oreo-shake', name: 'Oreo Shake', nameUrdu: 'اوریو شیک', category: 'milkshakes', sizes: { small: 300, medium: 450, large: 600 } }
+      { id: 'mango-ice-shake', name: 'Mango Ice Cream Milkshake', nameUrdu: 'منگو آئسکریم ملک شیک', category: 'ice-cream-milkshake', sizes: { glass: 240, mug: 360 } },
+      { id: 'banana-ice-shake', name: 'Banana Ice Cream Milkshake', nameUrdu: 'بنانا آئسکریم ملک شیک', category: 'ice-cream-milkshake', sizes: { glass: 240, mug: 360 } },
+      { id: 'strawberry-ice-shake', name: 'Strawberry Ice Cream Milkshake', nameUrdu: 'اسٹرابیری آئسکریم ملک شیک', category: 'ice-cream-milkshake', sizes: { glass: 240, mug: 360 } },
+      { id: 'kulfa-ice-shake', name: 'Kulfa Ice Cream Milkshake', nameUrdu: 'کلفہ آئسکریم ملک شیک', category: 'ice-cream-milkshake', sizes: { glass: 240, mug: 360 } },
+      { id: 'pineapple-ice-shake', name: 'Pineapple Ice Cream Milkshake', nameUrdu: 'پائن ایپل آئسکریم ملک شیک', category: 'ice-cream-milkshake', sizes: { glass: 240, mug: 360 } },
+      { id: 'vanilla-ice-shake', name: 'Vanilla Ice Cream Milkshake', nameUrdu: 'ونیلا آئسکریم ملک شیک', category: 'ice-cream-milkshake', sizes: { glass: 240, mug: 360 } },
+      { id: 'chocolate-ice-shake', name: 'Chocolate Ice Cream Milkshake', nameUrdu: 'چاکلیٹ آئسکریم ملک شیک', category: 'ice-cream-milkshake', sizes: { glass: 240, mug: 360 } }
     ]
   },
   {
-    id: 'ice-cream-milkshakes',
-    name: 'Ice Cream Milk Shakes',
-    nameUrdu: 'آئسکریم ملک شیک',
-    icon: '🍦',
-    color: 'bg-gradient-to-br from-yellow-400 to-orange-500',
-    items: [
-      { id: 'chocolate-ice-shake', name: 'Chocolate Ice Cream Shake', nameUrdu: 'چاکلیٹ آئسکریم شیک', category: 'ice-cream-milkshakes', sizes: { small: 240, medium: 360, large: 480 } },
-      { id: 'banana-ice-shake', name: 'Banana Ice Cream Shake', nameUrdu: 'بنانا آئسکریم شیک', category: 'ice-cream-milkshakes', sizes: { small: 240, medium: 360, large: 480 } },
-      { id: 'strawberry-ice-shake', name: 'Strawberry Ice Cream Shake', nameUrdu: 'اسٹرابیری آئسکریم شیک', category: 'ice-cream-milkshakes', sizes: { small: 240, medium: 360, large: 480 } },
-      { id: 'pista-ice-shake', name: 'Pista Ice Cream Shake', nameUrdu: 'پستہ آئسکریم شیک', category: 'ice-cream-milkshakes', sizes: { small: 240, medium: 360, large: 480 } },
-      { id: 'orange-ice-shake', name: 'Orange Ice Cream Shake', nameUrdu: 'اورنج آئسکریم شیک', category: 'ice-cream-milkshakes', sizes: { small: 240, medium: 360, large: 480 } },
-      { id: 'vanilla-ice-shake', name: 'Vanilla Ice Cream Shake', nameUrdu: 'ونیلا آئسکریم شیک', category: 'ice-cream-milkshakes', sizes: { small: 240, medium: 360, large: 480 } },
-      { id: 'kulfa-ice-shake', name: 'Kulfa Ice Cream Shake', nameUrdu: 'کلفہ آئسکریم شیک', category: 'ice-cream-milkshakes', sizes: { small: 280, medium: 420, large: 550 } },
-      { id: 'malai-ice-shake', name: 'Malai Ice Cream Shake', nameUrdu: 'ملائی آئسکریم شیک', category: 'ice-cream-milkshakes', sizes: { small: 240, medium: 360, large: 480 } }
-    ]
-  },
-  {
-    id: 'fruit-ice-milkshakes',
-    name: 'Fruit Ice Cream Milk Shakes',
-    nameUrdu: 'فروٹ آئسکریم ملک شیک',
+    id: 'fruit-shakes',
+    name: 'Fruit Shakes',
+    nameUrdu: 'فروٹ شیکس',
     icon: '🍓',
     color: 'bg-gradient-to-br from-green-400 to-emerald-500',
     items: [
-      { id: 'mango-fruit-shake', name: 'Mango Fruit Ice Cream Shake', nameUrdu: 'آم فروٹ آئسکریم شیک', category: 'fruit-ice-milkshakes', sizes: { small: 200, medium: 300, large: 400 } },
-      { id: 'banana-fruit-shake', name: 'Banana Fruit Ice Cream Shake', nameUrdu: 'کیلا فروٹ آئسکریم شیک', category: 'fruit-ice-milkshakes', sizes: { small: 200, medium: 300, large: 400 } },
-      { id: 'apple-fruit-shake', name: 'Apple Fruit Ice Cream Shake', nameUrdu: 'سیب فروٹ آئسکریم شیک', category: 'fruit-ice-milkshakes', sizes: { small: 200, medium: 300, large: 400 } },
-      { id: 'strawberry-fruit-shake', name: 'Strawberry Fruit Ice Cream Shake', nameUrdu: 'اسٹرابیری فروٹ آئسکریم شیک', category: 'fruit-ice-milkshakes', sizes: { small: 240, medium: 360, large: 480 } },
-      { id: 'mixed-fruit-shake', name: 'Mixed Fruit Ice Cream Shake', nameUrdu: 'مکس فروٹ آئسکریم شیک', category: 'fruit-ice-milkshakes', sizes: { small: 200, medium: 300, large: 400 } },
-      { id: 'guava-fruit-shake', name: 'Guava Fruit Ice Cream Shake', nameUrdu: 'امرود فروٹ آئسکریم شیک', category: 'fruit-ice-milkshakes', sizes: { small: 230, medium: 350, large: 460 } }
+      { id: 'mango-milkshake', name: 'Mango Milkshake', nameUrdu: 'منگو ملک شیک', category: 'fruit-shakes', sizes: { glass: 180, mug: 270 } },
+      { id: 'banana-milkshake', name: 'Banana Milkshake', nameUrdu: 'بنانا ملک شیک', category: 'fruit-shakes', sizes: { glass: 150, mug: 250 } },
+      { id: 'strawberry-milkshake', name: 'Strawberry Milkshake', nameUrdu: 'اسٹرابیری ملک شیک', category: 'fruit-shakes', sizes: { glass: 180, mug: 270 } },
+      { id: 'apple-milkshake', name: 'Apple Milkshake', nameUrdu: 'ایپل ملک شیک', category: 'fruit-shakes', sizes: { glass: 150, mug: 250 } },
+      { id: 'khajor-milkshake', name: 'Khajor Milkshake', nameUrdu: 'کھجور ملک شیک', category: 'fruit-shakes', sizes: { glass: 200, mug: 300 } },
+      { id: 'khoya-khajor', name: 'Khoya Khajor Milkshake', nameUrdu: 'کھویا کھجور ملک شیک', category: 'fruit-shakes', sizes: { glass: 240, mug: 360 } },
+      { id: 'banana-khajor', name: 'Banana Khajor Milkshake', nameUrdu: 'بنانا کھجور ملک شیک', category: 'fruit-shakes', sizes: { glass: 180, mug: 270 } },
+      { id: 'apple-khajor', name: 'Apple Khajor Milkshake', nameUrdu: 'ایپل کھجور ملک شیک', category: 'fruit-shakes', sizes: { glass: 180, mug: 270 } },
+      { id: 'peach-milkshake', name: 'Peach Milkshake', nameUrdu: 'پیچ ملک شیک', category: 'fruit-shakes', sizes: { glass: 160, mug: 240 } },
+      { id: 'chocolate-milkshake', name: 'Chocolate Milkshake', nameUrdu: 'چاکلیٹ ملک شیک', category: 'fruit-shakes', sizes: { glass: 250, mug: 370 } },
+      { id: 'pineapple-milkshake', name: 'Pineapple Milkshake', nameUrdu: 'پائن ایپل ملک شیک', category: 'fruit-shakes', sizes: { glass: 300, mug: 450 } },
+      { id: 'mixed-fruit-milkshake', name: 'Mixed Fruit Milkshake', nameUrdu: 'مکس فروٹ ملک شیک', category: 'fruit-shakes', sizes: { glass: 200, mug: 300 } },
+      { id: 'cocktail-milkshake', name: 'Cocktail Milkshake', nameUrdu: 'کوک ٹیل ملک شیک', category: 'fruit-shakes', sizes: { glass: 300, mug: 450 } },
+      { id: 'oreo-milkshake', name: 'Oreo Milkshake', nameUrdu: 'اوریو ملک شیک', category: 'fruit-shakes', sizes: { glass: 300, mug: 450 } }
     ]
   },
   {
-    id: 'fresh-juices',
-    name: 'Fresh Juices',
-    nameUrdu: 'فریش جوسز',
-    icon: '🧃',
-    color: 'bg-gradient-to-br from-amber-400 to-red-500',
+    id: 'platters',
+    name: 'Platters',
+    nameUrdu: 'پلیٹرز',
+    icon: '🍽️',
+    color: 'bg-gradient-to-br from-amber-500 to-yellow-600',
     items: [
-      { id: 'orange-juice', name: 'Orange Juice', nameUrdu: 'اورنج جوس', category: 'fresh-juices', sizes: { small: 150, medium: 230, large: 300 } },
-      { id: 'carrot-juice', name: 'Carrot Juice', nameUrdu: 'گاجر جوس', category: 'fresh-juices', sizes: { small: 100, medium: 150, large: 200 } },
-      { id: 'mixed-juice', name: 'Mixed Juice', nameUrdu: 'مکس جوس', category: 'fresh-juices', sizes: { small: 150, medium: 230, large: 300 } },
-      { id: 'pomegranate-juice', name: 'Pomegranate Juice', nameUrdu: 'انار جوس', category: 'fresh-juices', sizes: { small: 400, medium: 600, large: 800 } },
-      { id: 'lemon-juice', name: 'Lemon Juice', nameUrdu: 'لیموں جوس', category: 'fresh-juices', sizes: { small: 200, medium: 300, large: 400 } },
-      { id: 'sugarcane-juice', name: 'Sugarcane Juice', nameUrdu: 'گنے کا جوس', category: 'fresh-juices', sizes: { small: 200, medium: 300, large: 400 } },
-      { id: 'watermelon-juice', name: 'Watermelon Juice', nameUrdu: 'تربوز جوس', category: 'fresh-juices', sizes: { small: 150, medium: 230, large: 300 } },
-      { id: 'musk-melon-juice', name: 'Musk Melon Juice', nameUrdu: 'خربوزہ جوس', category: 'fresh-juices', sizes: { small: 350, medium: 530, large: 700 } },
-      { id: 'banana-juice', name: 'Banana Juice', nameUrdu: 'کیلا جوس', category: 'fresh-juices', sizes: { small: 150, medium: 230, large: 300 } },
-      { id: 'falsa-juice', name: 'Falsa Juice', nameUrdu: 'فالسہ جوس', category: 'fresh-juices', sizes: { small: 120, medium: 180, large: 240 } },
-      { id: 'kinnow-juice', name: 'Kinnow Juice', nameUrdu: 'کینو جوس', category: 'fresh-juices', sizes: { small: 350, medium: 530, large: 700 } },
-      { id: 'seasonal-juice', name: 'Seasonal Juice', nameUrdu: 'موسمی جوس', category: 'fresh-juices', sizes: { small: 250, medium: 370, large: 500 } }
+      { id: 'malai-boti-platter', name: 'Malai Boti Platter', nameUrdu: 'ملائی بوٹی پلیٹر', category: 'platters', price: 650 },
+      { id: 'shawarma-platter', name: 'Shawarma Platter', nameUrdu: 'شوارما پلیٹر', category: 'platters', price: 490 }
     ]
   },
   {
-    id: 'doodh-soda',
-    name: 'Doodh Soda',
-    nameUrdu: 'دودھ سوڈا',
-    icon: '🥛',
-    color: 'bg-gradient-to-br from-indigo-400 to-purple-500',
+    id: 'pizza-deals',
+    name: 'Pizza Deals',
+    nameUrdu: 'پیزا ڈیلز',
+    icon: '🎁',
+    color: 'bg-gradient-to-br from-yellow-400 to-orange-500',
     items: [
-      { id: 'regular-doodh-soda', name: 'Regular Doodh Soda 250ml', nameUrdu: 'ریگولر دودھ سوڈا ۲۵۰ملی', category: 'doodh-soda', price: 180 },
-      { id: 'chocolate-doodh-soda', name: 'Chocolate Doodh Soda', nameUrdu: 'چاکلیٹ دودھ سوڈا', category: 'doodh-soda', price: 280 },
-      { id: 'banana-doodh-soda', name: 'Banana Doodh Soda', nameUrdu: 'کیلا دودھ سوڈا', category: 'doodh-soda', price: 280 },
-      { id: 'strawberry-doodh-soda', name: 'Strawberry Doodh Soda', nameUrdu: 'اسٹرابیری دودھ سوڈا', category: 'doodh-soda', price: 280 },
-      { id: 'pista-doodh-soda', name: 'Pista Doodh Soda', nameUrdu: 'پستہ دودھ سوڈا', category: 'doodh-soda', price: 280 },
-      { id: 'kulfa-doodh-soda', name: 'Kulfa Doodh Soda', nameUrdu: 'کلفہ دودھ سوڈا', category: 'doodh-soda', price: 280 },
-      { id: 'orange-doodh-soda', name: 'Orange Doodh Soda', nameUrdu: 'اورنج دودھ سوڈا', category: 'doodh-soda', price: 280 },
-      { id: 'vanilla-doodh-soda', name: 'Vanilla Doodh Soda', nameUrdu: 'ونیلا دودھ سوڈا', category: 'doodh-soda', price: 280 },
-      { id: 'special-doodh-soda', name: 'Special Doodh Soda 1 Liter', nameUrdu: 'اسپیشل دودھ سوڈا ۱ لیٹر', category: 'doodh-soda', price: 450 }
+      { id: 'pizza-deal-01', name: 'Deal 01: 1 Small Pizza + 5 Hot Wings + 500ml Drink', nameUrdu: '', category: 'pizza-deals', price: 899 },
+      { id: 'pizza-deal-02', name: 'Deal 02: 1 Large Pizza + 1 Special Pasta + 1.5L Drink', nameUrdu: '', category: 'pizza-deals', price: 2150 },
+      { id: 'pizza-deal-03', name: 'Deal 03: 1 Medium Pizza + 1 Pasta + 1L Drink', nameUrdu: '', category: 'pizza-deals', price: 1670 },
+      { id: 'pizza-deal-04', name: 'Deal 04: 2 Medium Pizza + 1.5L Drink', nameUrdu: '', category: 'pizza-deals', price: 2050 },
+      { id: 'pizza-deal-05', name: 'Deal 05: 1 Large Pizza + 10 Hot Wings + 1.5L Drink', nameUrdu: '', category: 'pizza-deals', price: 1970 },
+      { id: 'pizza-deal-06', name: 'Deal 06: 2 Large Pizza + 10 Hot Wings + 1.5L Drink', nameUrdu: '', category: 'pizza-deals', price: 3190 },
+      { id: 'pizza-deal-07', name: 'Deal 07: 1 Large Pizza + 1 Medium Pizza + 1.5L Drink', nameUrdu: '', category: 'pizza-deals', price: 2370 },
+      { id: 'pizza-deal-08', name: 'Deal 08: 1 Large Pizza + 3 Zinger Burger + 1.5L Drink', nameUrdu: '', category: 'pizza-deals', price: 2460 }
     ]
   },
   {
-    id: 'fast-food',
-    name: 'Fast Food',
-    nameUrdu: 'فاسٹ فوڈز',
+    id: 'burger-deals',
+    name: 'Burger Deals',
+    nameUrdu: 'برگر ڈیلز',
     icon: '🍔',
-    color: 'bg-gradient-to-br from-red-400 to-pink-500',
+    color: 'bg-gradient-to-br from-red-500 to-pink-600',
     items: [
-      { id: 'zinger-burger', name: 'Zinger Burger', nameUrdu: 'زنگر برگر', category: 'fast-food', price: 150 },
-      { id: 'chicken-burger', name: 'Chicken Burger', nameUrdu: 'چکن برگر', category: 'fast-food', price: 200 },
-      { id: 'double-zinger', name: 'Double Zinger Burger', nameUrdu: 'ڈبل زنگر برگر', category: 'fast-food', price: 200 },
-      { id: 'double-chicken', name: 'Double Chicken Burger', nameUrdu: 'ڈبل چکن برگر', category: 'fast-food', price: 200 },
-      { id: 'pizza-burger', name: 'Pizza Burger', nameUrdu: 'پیزا برگر', category: 'fast-food', price: 200 },
-      { id: 'crispy-burger', name: 'Crispy Burger', nameUrdu: 'کرسپی برگر', category: 'fast-food', price: 350 }
+      { id: 'burger-deal-01', name: 'Deal 01: 2 Zinger + Regular Fries + Regular Drink', nameUrdu: '', category: 'burger-deals', price: 890 },
+      { id: 'burger-deal-02', name: 'Deal 02: 10 Hot Wings + 5 Nuggets + 500ml Drink', nameUrdu: '', category: 'burger-deals', price: 870 },
+      { id: 'burger-deal-03', name: 'Deal 03: 3 Zinger + 1 Family Fries + 1L Drink', nameUrdu: '', category: 'burger-deals', price: 1350 },
+      { id: 'burger-deal-04', name: 'Deal 04: 5 Zinger + 1 Family Fries + 1.5L Drink', nameUrdu: '', category: 'burger-deals', price: 1999 }
     ]
   },
   {
-    id: 'fruit-chat',
-    name: 'Fruit Chat',
-    nameUrdu: 'فروٹ چاٹ',
-    icon: '🍇',
-    color: 'bg-gradient-to-br from-lime-400 to-green-500',
+    id: 'birthday-deals',
+    name: 'Birthday Deals',
+    nameUrdu: 'سالگرہ ڈیلز',
+    icon: '🎂',
+    color: 'bg-gradient-to-br from-pink-500 to-purple-600',
     items: [
-      { id: 'mixed-fruit-chat', name: 'Mixed Fruit Chat', nameUrdu: 'مکس فروٹ چاٹ', category: 'fruit-chat', price: 170 },
-      { id: 'banana-chat', name: 'Banana Chat', nameUrdu: 'کیلا چاٹ', category: 'fruit-chat', price: 240 },
-      { id: 'apple-pomegranate-chat', name: 'Apple Pomegranate Chat', nameUrdu: 'سیب انار چاٹ', category: 'fruit-chat', price: 220 },
-      { id: 'faloodha-special-chat', name: 'Faloodha Special Chat', nameUrdu: 'فالودہ اسپیشل چاٹ', category: 'fruit-chat', price: 20 }
-    ]
-  },
-  {
-    id: 'chicken-biryani',
-    name: 'Chicken Biryani',
-    nameUrdu: 'چکن بریانی',
-    icon: '🍛',
-    color: 'bg-gradient-to-br from-orange-400 to-red-600',
-    items: [
-      { id: 'chicken-biryani-full', name: 'Chicken Biryani Full', nameUrdu: 'چکن بریانی فل', category: 'chicken-biryani', price: 300 },
-      { id: 'chicken-biryani-half', name: 'Chicken Biryani Half', nameUrdu: 'چکن بریانی ہاف', category: 'chicken-biryani', price: 200 },
-      { id: 'french-fries', name: 'French Fries', nameUrdu: 'فرنچ فرائز', category: 'chicken-biryani', price: 30 },
-      { id: 'masala-french-fries', name: 'Masala French Fries', nameUrdu: 'مسالہ فرنچ فرائز', category: 'chicken-biryani', price: 30 }
+      { id: 'birthday-deal-01', name: 'Birthday Deal 01: 4 Large Special Pizzas + 20 Hot Wings + 3 (1.5L) Drinks + 1 Pound Cake Free', nameUrdu: '', category: 'birthday-deals', price: 7850 },
+      { id: 'birthday-deal-02', name: 'Birthday Deal 02: 2 Large Special Pizzas + 20 Hot Wings + 2 Special Pasta + 2 (1.5L) Drinks + 1 Pound Cake Free', nameUrdu: '', category: 'birthday-deals', price: 5790 }
     ]
   }
 ];
 
 export const shopInfo = {
-  name: 'Zam Zam Ice Bar',
-  nameUrdu: 'زم زم آئس بار',
+  name: 'Zam Zam Pizza Hut',
+  nameUrdu: 'زم زم پیزا ہٹ',
   phone: '0370-9191370',
-  address: 'Free Home Delivery Available',
-  addressUrdu: 'مفت ہوم ڈیلیوری دستیاب ہے'
+  address: 'Burewala - Free Home Delivery Available',
+  addressUrdu: 'بورے والا - مفت ہوم ڈیلیوری دستیاب ہے'
 };

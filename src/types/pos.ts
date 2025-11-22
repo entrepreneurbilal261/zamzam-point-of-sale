@@ -4,7 +4,7 @@ export interface CartItem {
   nameUrdu: string;
   price: number;
   quantity: number;
-  size?: 'small' | 'medium' | 'large';
+  size?: string; // Can be 'small' | 'medium' | 'large' | 'glass' | 'mug' | etc.
   category: string;
 }
 

@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Search, Store, BarChart3 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import bannerImage from '@/assets/zam-zam-banner.jpg';
@@ -26,6 +27,14 @@ export const POSSystem = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const { saveReceipt } = useSupabaseReceipts();
+
+  // Separate deals from regular categories
+  const deals = menuData.filter(cat => 
+    cat.id === 'pizza-deals' || cat.id === 'burger-deals' || cat.id === 'birthday-deals'
+  );
+  const regularCategories = menuData.filter(cat => 
+    cat.id !== 'pizza-deals' && cat.id !== 'burger-deals' && cat.id !== 'birthday-deals'
+  );
 
   const selectedCategoryData = menuData.find(cat => cat.id === state.selectedCategory);
 
@@ -188,9 +197,32 @@ export const POSSystem = () => {
       </header>
 
       <div className="flex-1 flex overflow-hidden">
+        {/* Left Sidebar - Categories */}
+        <div className="w-64 bg-card border-r flex flex-col">
+          <div className="p-4 border-b">
+            <h3 className="font-semibold text-lg mb-2">Categories</h3>
+            <p className="font-urdu text-sm text-muted-foreground">زمرے</p>
+          </div>
+          <ScrollArea className="flex-1">
+            <div className="p-2 space-y-1">
+              {regularCategories.map((category) => (
+                <Button
+                  key={category.id}
+                  variant={state.selectedCategory === category.id ? "default" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => setState(prev => ({ ...prev, selectedCategory: category.id }))}
+                >
+                  <span className="mr-2">{category.icon}</span>
+                  <span className="text-sm">{category.name}</span>
+                </Button>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
+
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
-          {/* Navigation Bar */}
+          {/* Top Bar */}
           <div className="bg-card border-b p-4">
             <div className="flex items-center gap-4">
               {state.selectedCategory && (
@@ -202,7 +234,7 @@ export const POSSystem = () => {
                   }}
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Categories
+                  Back to Deals
                 </Button>
               )}
               
@@ -210,7 +242,7 @@ export const POSSystem = () => {
                 <h2 className="text-lg font-semibold">
                   {state.selectedCategory 
                     ? selectedCategoryData?.name || 'Unknown Category'
-                    : 'Select Category'
+                    : 'Special Deals'
                   }
                 </h2>
                 {selectedCategoryData && (
@@ -237,17 +269,58 @@ export const POSSystem = () => {
           {/* Content Area */}
           <ScrollArea className="flex-1 p-6">
             {!state.selectedCategory ? (
-              // Category Selection
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {menuData.map((category) => (
-                  <CategoryCard
-                    key={category.id}
-                    category={category}
-                    isSelected={false}
-                    onSelect={(categoryId) => 
-                      setState(prev => ({ ...prev, selectedCategory: categoryId }))
-                    }
-                  />
+              // Show Deals on Dashboard - Interactive Cards
+              <div className="space-y-8">
+                {deals.map((dealCategory) => (
+                  <div key={dealCategory.id} className="space-y-4">
+                    <div>
+                      <h3 className="text-2xl font-bold">{dealCategory.name}</h3>
+                      <p className="font-urdu text-lg text-muted-foreground">{dealCategory.nameUrdu}</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {dealCategory.items.map(item => (
+                        <Card 
+                          key={item.id}
+                          className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary"
+                          onClick={() => {
+                            const cartItem: CartItem = {
+                              id: item.id,
+                              name: item.name,
+                              nameUrdu: item.nameUrdu,
+                              price: item.price!,
+                              quantity: 1,
+                              category: item.category
+                            };
+                            addToCart(cartItem);
+                          }}
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex items-center justify-between mb-4">
+                              <Badge variant="secondary" className="text-lg font-bold">
+                                {item.name.split(':')[0]}
+                              </Badge>
+                              <Badge variant="default" className="text-lg">
+                                PKR {item.price}
+                              </Badge>
+                            </div>
+                            <h4 className="font-semibold text-lg mb-2">{item.name}</h4>
+                            <div className="flex items-center justify-between mt-4">
+                              <span className="text-sm text-muted-foreground">
+                                {getCartQuantityForItem(item.id) > 0 && (
+                                  <span className="font-bold text-primary">
+                                    {getCartQuantityForItem(item.id)} in cart
+                                  </span>
+                                )}
+                              </span>
+                              <Button size="sm" variant="default">
+                                Add to Cart
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             ) : (

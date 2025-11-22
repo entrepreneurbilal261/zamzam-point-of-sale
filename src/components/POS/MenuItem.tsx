@@ -14,10 +14,11 @@ interface MenuItemProps {
 }
 
 export const MenuItem = ({ item, onAddToCart, onRemoveFromCart, cartQuantity }: MenuItemProps) => {
-  const [selectedSize, setSelectedSize] = useState<'small' | 'medium' | 'large'>('small');
-  
   const hasMultipleSizes = item.sizes && Object.keys(item.sizes).length > 0;
-  const currentPrice = hasMultipleSizes ? item.sizes![selectedSize] : item.price!;
+  const firstSize = hasMultipleSizes ? Object.keys(item.sizes!)[0] : null;
+  const [selectedSize, setSelectedSize] = useState<string>(firstSize || '');
+  
+  const currentPrice = hasMultipleSizes ? item.sizes![selectedSize as keyof typeof item.sizes] : item.price!;
 
   const handleAddToCart = () => {
     const cartItem: CartItem = {
@@ -45,26 +46,37 @@ export const MenuItem = ({ item, onAddToCart, onRemoveFromCart, cartQuantity }: 
             <h4 className="font-semibold text-lg text-foreground mb-1">
               {item.name}
             </h4>
-            <p className="font-urdu text-xl font-bold text-primary mb-2">
-              {item.nameUrdu}
-            </p>
+            {item.nameUrdu && (
+              <p className="font-urdu text-xl font-bold text-primary mb-2">
+                {item.nameUrdu}
+              </p>
+            )}
             
             {hasMultipleSizes && (
               <div className="mb-3">
                 <p className="text-sm text-muted-foreground mb-2 font-urdu">سائز منتخب کریں</p>
-                <div className="flex gap-2">
-                  {Object.entries(item.sizes!).map(([size, price]) => (
-                    <Button
-                      key={size}
-                      variant={selectedSize === size ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setSelectedSize(size as 'small' | 'medium' | 'large')}
-                      className="font-urdu"
-                    >
-                      {size === 'small' ? 'چھوٹا' : size === 'medium' ? 'درمیانہ' : 'بڑا'}
-                      <span className="ml-1">PKR {price}</span>
-                    </Button>
-                  ))}
+                <div className="flex gap-2 flex-wrap">
+                  {Object.entries(item.sizes!).map(([size, price]) => {
+                    const sizeLabels: Record<string, string> = {
+                      'small': 'چھوٹا',
+                      'medium': 'درمیانہ',
+                      'large': 'بڑا',
+                      'glass': 'گلاس',
+                      'mug': 'مگ'
+                    };
+                    return (
+                      <Button
+                        key={size}
+                        variant={selectedSize === size ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedSize(size)}
+                        className="font-urdu"
+                      >
+                        {sizeLabels[size] || size}
+                        <span className="ml-1">PKR {price}</span>
+                      </Button>
+                    );
+                  })}
                 </div>
               </div>
             )}
