@@ -1,6 +1,7 @@
 import { CartItem } from "@/types/pos";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -8,30 +9,34 @@ import { ShoppingCart, Trash2, Receipt, Plus, Minus } from "lucide-react";
 
 interface CartProps {
   items: CartItem[];
+  customerName?: string;
+  onCustomerNameChange?: (value: string) => void;
   onUpdateQuantity: (itemId: string, quantity: number) => void;
   onRemoveItem: (itemId: string) => void;
   onGenerateReceipt: () => void;
   onClearCart: () => void;
 }
 
-export const Cart = ({ 
-  items, 
-  onUpdateQuantity, 
-  onRemoveItem, 
-  onGenerateReceipt, 
-  onClearCart 
+export const Cart = ({
+  items,
+  customerName = '',
+  onCustomerNameChange,
+  onUpdateQuantity,
+  onRemoveItem,
+  onGenerateReceipt,
+  onClearCart
 }: CartProps) => {
   const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <Card className="h-full flex flex-col">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2">
-          <ShoppingCart className="h-5 w-5" />
+      <CardHeader className="py-3 px-4">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <ShoppingCart className="h-4 w-4" />
           Cart
           {totalItems > 0 && (
-            <Badge variant="secondary" className="ml-auto">
+            <Badge variant="secondary" className="ml-auto text-xs">
               {totalItems}
             </Badge>
           )}
@@ -40,13 +45,11 @@ export const Cart = ({
       
       <CardContent className="flex-1 flex flex-col">
         {items.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center text-center">
+          <div className="flex-1 flex items-center justify-center text-center px-2">
             <div>
-              <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground font-urdu text-lg">
-                کارٹ خالی ہے
-              </p>
-              <p className="text-sm text-muted-foreground">
+              <ShoppingCart className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+              <p className="text-muted-foreground text-sm">Cart is empty</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Add items to get started
               </p>
             </div>
@@ -60,13 +63,9 @@ export const Cart = ({
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex-1">
                         <h4 className="font-medium text-sm">{item.name}</h4>
-                        <p className="font-urdu text-primary font-bold">
-                          {item.nameUrdu}
-                        </p>
                         {item.size && (
                           <p className="text-xs text-muted-foreground">
-                            Size: {item.size === 'small' ? 'چھوٹا' : 
-                                   item.size === 'medium' ? 'درمیانہ' : 'بڑا'}
+                            Size: {item.size}
                           </p>
                         )}
                       </div>
@@ -91,7 +90,7 @@ export const Cart = ({
                         >
                           <Minus className="h-3 w-3" />
                         </Button>
-                        <span className="font-bold min-w-[2rem] text-center">
+                        <span className="font-semibold text-sm min-w-[2rem] text-center">
                           {item.quantity}
                         </span>
                         <Button
@@ -104,7 +103,7 @@ export const Cart = ({
                         </Button>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold">PKR {item.price * item.quantity}</p>
+                        <p className="font-semibold text-sm">PKR {item.price * item.quantity}</p>
                         <p className="text-xs text-muted-foreground">
                           PKR {item.price} each
                         </p>
@@ -115,29 +114,40 @@ export const Cart = ({
               </div>
             </ScrollArea>
             
-            <div className="mt-4 pt-4 border-t">
-              <div className="flex justify-between items-center mb-4">
-                <span className="font-bold text-lg font-urdu">کل رقم:</span>
-                <span className="font-bold text-xl text-primary">PKR {total}</span>
+            <div className="mt-3 pt-3 border-t">
+              {onCustomerNameChange && (
+                <div className="mb-3">
+                  <label className="text-xs text-muted-foreground block mb-1">Customer name (optional)</label>
+                  <Input
+                    placeholder="Name for receipt"
+                    value={customerName}
+                    onChange={(e) => onCustomerNameChange(e.target.value)}
+                    className="h-8 text-sm"
+                  />
+                </div>
+              )}
+              <div className="flex justify-between items-center mb-3">
+                <span className="font-semibold text-sm">Total:</span>
+                <span className="font-semibold text-base text-primary">PKR {total}</span>
               </div>
               
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Button 
                   onClick={onGenerateReceipt}
-                  className="w-full"
+                  className="w-full text-sm h-9"
                   variant="golden"
-                  size="lg"
+                  size="default"
                 >
-                  <Receipt className="h-4 w-4 mr-2" />
+                  <Receipt className="h-3.5 w-3.5 mr-1.5" />
                   Generate Receipt
                 </Button>
                 <Button 
                   onClick={onClearCart}
                   variant="outline"
-                  className="w-full"
+                  className="w-full text-xs h-8"
                   size="sm"
                 >
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="h-3.5 w-3.5 mr-1.5" />
                   Clear Cart
                 </Button>
               </div>

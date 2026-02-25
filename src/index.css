@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Zam Zam Ice Bar POS Design System */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
-
 @layer base {
   :root {
     /* Brand Colors - Golden & Blue Theme */
@@ -114,12 +111,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-  }
-
-  /* Urdu Font Support */
-  .font-urdu {
-    font-family: 'Noto Nastaliq Urdu', serif;
+    @apply bg-background text-foreground font-sans antialiased text-sm;
   }
 
   /* Custom Animations */

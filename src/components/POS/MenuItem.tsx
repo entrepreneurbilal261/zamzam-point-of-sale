@@ -24,7 +24,7 @@ export const MenuItem = ({ item, onAddToCart, onRemoveFromCart, cartQuantity }: 
     const cartItem: CartItem = {
       id: hasMultipleSizes ? `${item.id}-${selectedSize}` : item.id,
       name: item.name,
-      nameUrdu: item.nameUrdu,
+      nameUrdu: '',
       price: currentPrice,
       quantity: 1,
       size: hasMultipleSizes ? selectedSize : undefined,
@@ -39,49 +39,35 @@ export const MenuItem = ({ item, onAddToCart, onRemoveFromCart, cartQuantity }: 
   };
 
   return (
-    <Card className="hover:shadow-elegant transition-all duration-300 hover:scale-[1.02]">
-      <CardContent className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex-1">
-            <h4 className="font-semibold text-lg text-foreground mb-1">
+    <Card className="hover:shadow-elegant transition-all duration-200">
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start gap-2 mb-3">
+          <div className="flex-1 min-w-0">
+            <h4 className="font-medium text-sm text-foreground mb-1 leading-snug">
               {item.name}
             </h4>
-            {item.nameUrdu && (
-              <p className="font-urdu text-xl font-bold text-primary mb-2">
-                {item.nameUrdu}
-              </p>
-            )}
             
             {hasMultipleSizes && (
-              <div className="mb-3">
-                <p className="text-sm text-muted-foreground mb-2 font-urdu">سائز منتخب کریں</p>
-                <div className="flex gap-2 flex-wrap">
-                  {Object.entries(item.sizes!).map(([size, price]) => {
-                    const sizeLabels: Record<string, string> = {
-                      'small': 'چھوٹا',
-                      'medium': 'درمیانہ',
-                      'large': 'بڑا',
-                      'glass': 'گلاس',
-                      'mug': 'مگ'
-                    };
-                    return (
-                      <Button
-                        key={size}
-                        variant={selectedSize === size ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setSelectedSize(size)}
-                        className="font-urdu"
-                      >
-                        {sizeLabels[size] || size}
-                        <span className="ml-1">PKR {price}</span>
-                      </Button>
-                    );
-                  })}
+              <div className="mb-2">
+                <p className="text-xs text-muted-foreground mb-1">Select size</p>
+                <div className="flex gap-1.5 flex-wrap">
+                  {Object.entries(item.sizes!).map(([size, price]) => (
+                    <Button
+                      key={size}
+                      variant={selectedSize === size ? "default" : "outline"}
+                      size="sm"
+                      className="text-xs h-7 px-2"
+                      onClick={() => setSelectedSize(size)}
+                    >
+                      {size}
+                      <span className="ml-1">PKR {price}</span>
+                    </Button>
+                  ))}
                 </div>
               </div>
             )}
             
-            <Badge variant="secondary" className="text-lg font-bold">
+            <Badge variant="secondary" className="text-xs font-medium mt-1">
               PKR {currentPrice}
             </Badge>
           </div>
@@ -89,33 +75,35 @@ export const MenuItem = ({ item, onAddToCart, onRemoveFromCart, cartQuantity }: 
         
         <div className="flex items-center justify-between">
           {cartQuantity > 0 ? (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleRemoveFromCart}
-                className="h-8 w-8 p-0"
+                className="h-7 w-7 p-0"
               >
-                <Minus className="h-4 w-4" />
+                <Minus className="h-3.5 w-3.5" />
               </Button>
-              <span className="font-bold text-lg min-w-[2rem] text-center">
+              <span className="font-semibold text-sm min-w-[1.5rem] text-center">
                 {cartQuantity}
               </span>
               <Button
                 variant="default"
                 size="sm"
                 onClick={handleAddToCart}
-                className="h-8 w-8 p-0"
+                className="h-7 w-7 p-0"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-3.5 w-3.5" />
               </Button>
             </div>
           ) : (
             <Button 
               onClick={handleAddToCart}
-                  variant="golden"
+              variant="golden"
+              size="sm"
+              className="text-xs h-8"
             >
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-3.5 w-3.5 mr-1.5" />
               Add to Cart
             </Button>
           )}

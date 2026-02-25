@@ -18,12 +18,9 @@ export const CategoryCard = ({ category, isSelected, onSelect }: CategoryCardPro
       <CardContent className="p-6">
         <div className={`${category.color} rounded-2xl p-4 mb-4 text-center`}>
           <div className="text-4xl mb-2">{category.icon}</div>
-          <h3 className="text-white font-bold text-lg">{category.name}</h3>
+          <h3 className="text-white font-semibold text-base">{category.name}</h3>
         </div>
         <div className="text-center">
-          <p className="font-urdu text-xl font-bold text-foreground mb-1">
-            {category.nameUrdu}
-          </p>
           <p className="text-sm text-muted-foreground">
             {category.items.length} items
           </p>

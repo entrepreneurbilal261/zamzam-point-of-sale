@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CalendarDays, TrendingUp, ShoppingBag, Crown } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -17,18 +18,18 @@ export const MonthlySales = () => {
   const { getMonthlySales } = useSupabaseReceipts();
 
   const months = [
-    { value: '1', label: 'January', urdu: 'جنوری' },
-    { value: '2', label: 'February', urdu: 'فروری' },
-    { value: '3', label: 'March', urdu: 'مارچ' },
-    { value: '4', label: 'April', urdu: 'اپریل' },
-    { value: '5', label: 'May', urdu: 'مئی' },
-    { value: '6', label: 'June', urdu: 'جون' },
-    { value: '7', label: 'July', urdu: 'جولائی' },
-    { value: '8', label: 'August', urdu: 'اگست' },
-    { value: '9', label: 'September', urdu: 'ستمبر' },
-    { value: '10', label: 'October', urdu: 'اکتوبر' },
-    { value: '11', label: 'November', urdu: 'نومبر' },
-    { value: '12', label: 'December', urdu: 'دسمبر' }
+    { value: '1', label: 'January' },
+    { value: '2', label: 'February' },
+    { value: '3', label: 'March' },
+    { value: '4', label: 'April' },
+    { value: '5', label: 'May' },
+    { value: '6', label: 'June' },
+    { value: '7', label: 'July' },
+    { value: '8', label: 'August' },
+    { value: '9', label: 'September' },
+    { value: '10', label: 'October' },
+    { value: '11', label: 'November' },
+    { value: '12', label: 'December' }
   ];
 
   const years = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i);
@@ -52,8 +53,7 @@ export const MonthlySales = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-4 mb-6">
         <CalendarDays className="h-6 w-6 text-primary" />
-        <h2 className="text-2xl font-bold">Monthly Sales Report</h2>
-        <p className="font-urdu text-lg text-muted-foreground">ماہانہ فروخت رپورٹ</p>
+        <h2 className="text-base font-bold">Monthly Sales Report</h2>
       </div>
 
       <Card>
@@ -101,12 +101,9 @@ export const MonthlySales = () => {
       {analytics && (
         <>
           <div className="mb-4">
-            <h3 className="text-xl font-semibold">
+            <h3 className="text-sm font-semibold">
               {selectedMonthLabel?.label} {selectedYear} Report
             </h3>
-            <p className="font-urdu text-muted-foreground">
-              {selectedMonthLabel?.urdu} {selectedYear} کی رپورٹ
-            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -116,8 +113,7 @@ export const MonthlySales = () => {
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">PKR {analytics.totalRevenue}</div>
-                <p className="font-urdu text-sm text-muted-foreground">کل آمدن</p>
+                <div className="text-base font-bold text-green-600">PKR {analytics.totalRevenue}</div>
               </CardContent>
             </Card>
 
@@ -127,8 +123,7 @@ export const MonthlySales = () => {
                 <ShoppingBag className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-blue-600">{analytics.totalOrders}</div>
-                <p className="font-urdu text-sm text-muted-foreground">کل آرڈرز</p>
+                <div className="text-base font-bold text-blue-600">{analytics.totalOrders}</div>
               </CardContent>
             </Card>
 
@@ -140,8 +135,7 @@ export const MonthlySales = () => {
               <CardContent>
                 {analytics.mostSoldItem ? (
                   <div>
-                    <div className="text-lg font-bold">{analytics.mostSoldItem.name}</div>
-                    <p className="font-urdu text-sm text-muted-foreground">{analytics.mostSoldItem.nameUrdu}</p>
+                    <div className="text-sm font-bold">{analytics.mostSoldItem.name}</div>
                     <Badge variant="secondary" className="mt-1">
                       {analytics.mostSoldItem.quantity} sold
                     </Badge>
@@ -156,16 +150,29 @@ export const MonthlySales = () => {
           <Card>
             <CardHeader>
               <CardTitle>Items Sold This Month</CardTitle>
-              <p className="font-urdu text-muted-foreground">اس مہینے فروخت شدہ اشیاء</p>
             </CardHeader>
             <CardContent>
               {analytics.items.length > 0 ? (
-                <div className="space-y-3">
+                <>
+                  <div className="mb-6 h-[280px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={analytics.items.slice(0, 12).map((i) => ({ name: i.name.length > 15 ? i.name.slice(0, 14) + '…' : i.name, revenue: i.revenue, quantity: i.quantity }))}
+                        margin={{ top: 8, right: 8, left: 8, bottom: 24 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" tick={{ fontSize: 11 }} angle={-35} textAnchor="end" height={60} />
+                        <YAxis tick={{ fontSize: 11 }} />
+                        <Tooltip formatter={(v: number) => [`PKR ${v}`, 'Revenue']} />
+                        <Bar dataKey="revenue" fill="#22c55e" radius={[4, 4, 0, 0]} name="Revenue" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="space-y-3">
                   {analytics.items.map((item, index) => (
                     <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                       <div className="flex-1">
                         <div className="font-medium">{item.name}</div>
-                        <div className="font-urdu text-sm text-muted-foreground">{item.nameUrdu}</div>
                       </div>
                       <div className="text-right">
                         <div className="font-bold">PKR {item.revenue}</div>
@@ -174,10 +181,10 @@ export const MonthlySales = () => {
                     </div>
                   ))}
                 </div>
+                </>
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <p>No items sold this month</p>
-                  <p className="font-urdu">اس مہینے کوئی فروخت نہیں</p>
                 </div>
               )}
             </CardContent>

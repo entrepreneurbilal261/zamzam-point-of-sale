@@ -1,5 +1,5 @@
 import { Receipt } from "@/types/pos";
-import { shopInfo } from "@/data/menu";
+import { ShopInfo } from "@/lib/shopSettings";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -8,11 +8,12 @@ import { useEffect, useRef } from "react";
 
 interface ReceiptModalProps {
   receipt: Receipt | null;
+  shopInfo: ShopInfo;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) => {
+export const ReceiptModal = ({ receipt, shopInfo, isOpen, onClose }: ReceiptModalProps) => {
   const printRef = useRef<HTMLDivElement>(null);
   const hasPrintedRef = useRef(false);
 
@@ -53,7 +54,7 @@ export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) =>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <div className="flex justify-between items-center">
-            <DialogTitle className="font-urdu text-xl">رسید</DialogTitle>
+            <DialogTitle>Receipt</DialogTitle>
             <Button variant="ghost" size="sm" onClick={onClose}>
               <X className="h-4 w-4" />
             </Button>
@@ -61,16 +62,12 @@ export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) =>
         </DialogHeader>
         
         <div ref={printRef} className="receipt-content bg-white text-black p-6 rounded-lg print-receipt">
-          {/* Header */}
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold bg-gradient-hero bg-clip-text text-transparent">
+            <h1 className="text-lg font-bold bg-gradient-hero bg-clip-text text-transparent">
               {shopInfo.name}
             </h1>
-            <p className="font-urdu text-xl font-bold text-primary mb-2">
-              {shopInfo.nameUrdu}
-            </p>
             <p className="text-sm text-gray-600">Phone: {shopInfo.phone}</p>
-            <p className="text-xs text-gray-500 font-urdu">{shopInfo.addressUrdu}</p>
+            <p className="text-xs text-gray-500">{shopInfo.address}</p>
           </div>
 
           <Separator className="mb-4" />
@@ -85,6 +82,12 @@ export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) =>
               <span>Date:</span>
               <span>{formatDate(receipt.date)}</span>
             </div>
+            {receipt.customerName && (
+              <div className="flex justify-between mt-1">
+                <span>Customer:</span>
+                <span>{receipt.customerName}</span>
+              </div>
+            )}
           </div>
 
           <Separator className="mb-4" />
@@ -96,15 +99,8 @@ export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) =>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <p className="font-medium text-sm">{item.name}</p>
-                    <p className="font-urdu text-primary text-sm">{item.nameUrdu}</p>
                     {item.size && (
-                      <p className="text-xs text-gray-500">
-                        Size: {item.size === 'small' ? 'چھوٹا' : 
-                               item.size === 'medium' ? 'درمیانہ' : 
-                               item.size === 'large' ? 'بڑا' :
-                               item.size === 'glass' ? 'گلاس' :
-                               item.size === 'mug' ? 'مگ' : item.size}
-                      </p>
+                      <p className="text-xs text-gray-500">Size: {item.size}</p>
                     )}
                   </div>
                   <div className="text-right ml-4">
@@ -122,19 +118,17 @@ export const ReceiptModal = ({ receipt, isOpen, onClose }: ReceiptModalProps) =>
 
           {/* Total */}
           <div className="text-center">
-            <div className="flex justify-between items-center text-lg font-bold">
-              <span className="font-urdu">کل رقم:</span>
+            <div className="flex justify-between items-center text-base font-bold">
+              <span>Total:</span>
               <span className="text-primary">PKR {receipt.total}</span>
             </div>
           </div>
 
           <Separator className="my-4" />
 
-          {/* Footer */}
           <div className="text-center text-xs text-gray-500">
-            <p className="font-urdu mb-1">آپ کا شکریہ!</p>
-            <p>Thank you for visiting Zam Zam Ice Bar!</p>
-            <p className="font-urdu mt-2">مفت ہوم ڈیلیوری دستیاب</p>
+            <p>Thank you for visiting {shopInfo.name}!</p>
+            <p className="mt-1">{shopInfo.address}</p>
           </div>
         </div>
 

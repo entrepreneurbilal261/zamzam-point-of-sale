@@ -121,6 +121,19 @@ export const useLocalReceipts = () => {
     }
   };
 
+  const getReceiptsByDateRange = async (start: Date, end: Date) => {
+    if (!isInitialized) {
+      await localDatabase.init();
+      setIsInitialized(true);
+    }
+    try {
+      return await localDatabase.getReceiptsByDateRange(start, end);
+    } catch (error) {
+      console.error('Error fetching receipts by date range:', error);
+      return [];
+    }
+  };
+
   const calculateAnalytics = (receipts: any[]): SalesAnalytics => {
     const totalRevenue = receipts.reduce((sum, receipt) => sum + receipt.total, 0);
     const totalOrders = receipts.length;
@@ -161,6 +174,7 @@ export const useLocalReceipts = () => {
     getDailySales,
     getMonthlySales,
     getTodayReceipts,
+    getReceiptsByDateRange,
     isLoading,
     isInitialized
   };

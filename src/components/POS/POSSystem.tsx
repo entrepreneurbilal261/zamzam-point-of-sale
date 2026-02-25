@@ -1,7 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { menuData, shopInfo } from '@/data/menu';
+import { useMenu } from '@/hooks/useMenu';
+import { useShopInfo } from '@/hooks/useShopInfo';
 import { useSupabaseReceipts } from '@/hooks/useSupabaseReceipts';
+import { localDatabase } from '@/lib/localDatabase';
 import { CartItem, Receipt, POSState } from '@/types/pos';
 import { CategoryCard } from './CategoryCard';
 import { MenuItem } from './MenuItem';
@@ -12,12 +14,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Search, Store, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Search, Store, BarChart3, UtensilsCrossed, Package, Settings, AlertTriangle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import bannerImage from '@/assets/zam-zam-banner.jpg';
 
 export const POSSystem = () => {
   const navigate = useNavigate();
+  const [shopInfo] = useShopInfo();
+  const { menu: menuData, loading: menuLoading } = useMenu();
   const [state, setState] = useState<POSState>({
     cart: [],
     selectedCategory: null,
@@ -26,15 +30,27 @@ export const POSSystem = () => {
   });
 
   const [searchTerm, setSearchTerm] = useState('');
-  const { saveReceipt } = useSupabaseReceipts();
+  const [customerName, setCustomerName] = useState('');
+  const [todayStats, setTodayStats] = useState<{ orders: number; revenue: number }>({ orders: 0, revenue: 0 });
+  const [lowStockCount, setLowStockCount] = useState(0);
+  const { saveReceipt, getTodayReceipts } = useSupabaseReceipts();
 
-  // Separate deals from regular categories
-  const deals = menuData.filter(cat => 
-    cat.id === 'pizza-deals' || cat.id === 'burger-deals' || cat.id === 'birthday-deals'
-  );
-  const regularCategories = menuData.filter(cat => 
-    cat.id !== 'pizza-deals' && cat.id !== 'burger-deals' && cat.id !== 'birthday-deals'
-  );
+  useEffect(() => {
+    localDatabase.init().then(() => {
+      localDatabase.getLowStockItems().then((items) => setLowStockCount(items.length));
+    });
+  }, []);
+
+  useEffect(() => {
+    getTodayReceipts().then((receipts) => {
+      const revenue = receipts.reduce((s, r) => s + (typeof r.total === 'number' ? r.total : 0), 0);
+      setTodayStats({ orders: receipts.length, revenue });
+    });
+  }, [state.isReceiptModalOpen, state.currentReceipt]);
+
+  // Deals = categories marked "Show on main page"; rest = regular categories
+  const deals = menuData.filter((cat: any) => cat.show_on_main === 1);
+  const regularCategories = menuData.filter((cat: any) => !cat.show_on_main);
 
   const selectedCategoryData = menuData.find(cat => cat.id === state.selectedCategory);
 
@@ -44,8 +60,7 @@ export const POSSystem = () => {
     if (!searchTerm) return selectedCategoryData.items;
     
     return selectedCategoryData.items.filter(item => 
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.nameUrdu.includes(searchTerm)
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [selectedCategoryData, searchTerm]);
 
@@ -132,7 +147,8 @@ export const POSSystem = () => {
       id: `ZZ${Date.now().toString().slice(-8)}`,
       items: [...state.cart],
       total: state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-      date: new Date()
+      date: new Date(),
+      customerName: customerName.trim() || undefined
     };
 
     // Save to database
@@ -142,8 +158,9 @@ export const POSSystem = () => {
       ...prev,
       currentReceipt: receipt,
       isReceiptModalOpen: true,
-      cart: [] // Clear cart after generating receipt
+      cart: []
     }));
+    setCustomerName('');
 
     toast({
       title: "Receipt Generated",
@@ -173,8 +190,8 @@ export const POSSystem = () => {
                 <Store className="h-8 w-8" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold drop-shadow-md">{shopInfo.name}</h1>
-                <p className="font-urdu text-xl opacity-90 drop-shadow-md">{shopInfo.nameUrdu}</p>
+                <h1 className="text-lg font-bold drop-shadow-md">{shopInfo.name}</h1>
+                <p className="text-xs opacity-90 drop-shadow-md">{shopInfo.address}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -187,9 +204,42 @@ export const POSSystem = () => {
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Reports
               </Button>
-              <div className="text-right text-sm opacity-90 bg-black/20 backdrop-blur-sm p-3 rounded-lg">
-                <p className="font-semibold">Phone: {shopInfo.phone}</p>
-                <p className="font-urdu">{shopInfo.addressUrdu}</p>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/20"
+                onClick={() => navigate('/menu')}
+              >
+                <UtensilsCrossed className="h-4 w-4 mr-2" />
+                Edit Menu
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/20"
+                onClick={() => navigate('/inventory')}
+              >
+                <Package className="h-4 w-4 mr-2" />
+                {lowStockCount > 0 ? (
+                  <>
+                    Inventory <Badge variant="destructive" className="ml-1 text-xs">{lowStockCount} low</Badge>
+                  </>
+                ) : (
+                  'Inventory'
+                )}
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/20"
+                onClick={() => navigate('/settings')}
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Button>
+              <div className="text-right text-sm opacity-90 bg-black/20 backdrop-blur-sm px-3 py-2 rounded-lg space-y-0.5">
+                <p className="font-semibold">Today: {todayStats.orders} orders · PKR {todayStats.revenue.toLocaleString('en-PK', { maximumFractionDigits: 0 })}</p>
+                <p className="text-xs">Phone: {shopInfo.phone}</p>
               </div>
             </div>
           </div>
@@ -197,11 +247,11 @@ export const POSSystem = () => {
       </header>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar - Categories */}
+        {/* Left Sidebar - Categories = the MENU to order from */}
         <div className="w-64 bg-card border-r flex flex-col">
           <div className="p-4 border-b">
-            <h3 className="font-semibold text-lg mb-2">Categories</h3>
-            <p className="font-urdu text-sm text-muted-foreground">زمرے</p>
+            <h3 className="font-semibold text-base mb-0.5">Menu</h3>
+            <p className="text-xs text-muted-foreground">Click a category to see items</p>
           </div>
           <ScrollArea className="flex-1">
             <div className="p-2 space-y-1">
@@ -212,8 +262,8 @@ export const POSSystem = () => {
                   className="w-full justify-start"
                   onClick={() => setState(prev => ({ ...prev, selectedCategory: category.id }))}
                 >
-                  <span className="mr-2">{category.icon}</span>
-                  <span className="text-sm">{category.name}</span>
+                  <span className="mr-2 text-base">{category.icon}</span>
+                  <span className="text-xs">{category.name}</span>
                 </Button>
               ))}
             </div>
@@ -234,22 +284,19 @@ export const POSSystem = () => {
                   }}
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Deals
+                  Back
                 </Button>
               )}
               
               <div className="flex-1">
-                <h2 className="text-lg font-semibold">
+                <h2 className="text-base font-semibold">
                   {state.selectedCategory 
                     ? selectedCategoryData?.name || 'Unknown Category'
-                    : 'Special Deals'
+                    : deals.length > 0 
+                      ? 'Special Deals' 
+                      : 'Menu'
                   }
                 </h2>
-                {selectedCategoryData && (
-                  <p className="font-urdu text-primary font-bold">
-                    {selectedCategoryData.nameUrdu}
-                  </p>
-                )}
               </div>
 
               {state.selectedCategory && (
@@ -268,60 +315,69 @@ export const POSSystem = () => {
 
           {/* Content Area */}
           <ScrollArea className="flex-1 p-6">
-            {!state.selectedCategory ? (
-              // Show Deals on Dashboard - Interactive Cards
+            {menuLoading ? (
+              <div className="flex items-center justify-center py-24">
+                <p className="text-muted-foreground">Loading menu...</p>
+              </div>
+            ) : !state.selectedCategory ? (
+              // Show Deals on Dashboard - Interactive Cards (only if any category is "Show on main page")
               <div className="space-y-8">
-                {deals.map((dealCategory) => (
-                  <div key={dealCategory.id} className="space-y-4">
-                    <div>
-                      <h3 className="text-2xl font-bold">{dealCategory.name}</h3>
-                      <p className="font-urdu text-lg text-muted-foreground">{dealCategory.nameUrdu}</p>
+                {deals.length > 0 ? (
+                  deals.map((dealCategory) => (
+                    <div key={dealCategory.id} className="space-y-3">
+                      <h3 className="text-base font-semibold">{dealCategory.name}</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {dealCategory.items.map(item => (
+                          <Card 
+                            key={item.id}
+                            className="hover:shadow-md transition-all cursor-pointer border hover:border-primary"
+                            onClick={() => {
+                              const cartItem: CartItem = {
+                                id: item.id,
+                                name: item.name,
+                                nameUrdu: '',
+                                price: item.price!,
+                                quantity: 1,
+                                category: item.category
+                              };
+                              addToCart(cartItem);
+                            }}
+                          >
+                            <CardContent className="p-4">
+                              <div className="flex items-center justify-between gap-2 mb-2">
+                                <Badge variant="secondary" className="text-xs font-medium shrink-0">
+                                  {item.name.split(':')[0]}
+                                </Badge>
+                                <Badge variant="default" className="text-xs shrink-0">
+                                  PKR {item.price}
+                                </Badge>
+                              </div>
+                              <p className="text-sm font-medium leading-snug mb-3 line-clamp-2">{item.name}</p>
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-muted-foreground">
+                                  {getCartQuantityForItem(item.id) > 0 && (
+                                    <span className="font-semibold text-primary">
+                                      {getCartQuantityForItem(item.id)} in cart
+                                    </span>
+                                  )}
+                                </span>
+                                <Button size="sm" variant="default" className="text-xs h-8">
+                                  Add to Cart
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {dealCategory.items.map(item => (
-                        <Card 
-                          key={item.id}
-                          className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary"
-                          onClick={() => {
-                            const cartItem: CartItem = {
-                              id: item.id,
-                              name: item.name,
-                              nameUrdu: item.nameUrdu,
-                              price: item.price!,
-                              quantity: 1,
-                              category: item.category
-                            };
-                            addToCart(cartItem);
-                          }}
-                        >
-                          <CardContent className="p-6">
-                            <div className="flex items-center justify-between mb-4">
-                              <Badge variant="secondary" className="text-lg font-bold">
-                                {item.name.split(':')[0]}
-                              </Badge>
-                              <Badge variant="default" className="text-lg">
-                                PKR {item.price}
-                              </Badge>
-                            </div>
-                            <h4 className="font-semibold text-lg mb-2">{item.name}</h4>
-                            <div className="flex items-center justify-between mt-4">
-                              <span className="text-sm text-muted-foreground">
-                                {getCartQuantityForItem(item.id) > 0 && (
-                                  <span className="font-bold text-primary">
-                                    {getCartQuantityForItem(item.id)} in cart
-                                  </span>
-                                )}
-                              </span>
-                              <Button size="sm" variant="default">
-                                Add to Cart
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground text-sm">
+                    <p className="font-medium mb-1">Select a category on the left to see items</p>
+                    <p className="text-xs">That’s your menu — click any category in the sidebar to view and add items to the cart.</p>
+                    <p className="text-xs mt-3">To add more categories or set up deals, go to <strong>Edit Menu</strong> in the header.</p>
                   </div>
-                ))}
+                )}
               </div>
             ) : (
               // Items Display
@@ -339,9 +395,8 @@ export const POSSystem = () => {
             )}
             
             {state.selectedCategory && filteredItems.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">No items found</p>
-                <p className="font-urdu text-muted-foreground">کوئی آئٹم نہیں ملا</p>
+              <div className="text-center py-8">
+                <p className="text-muted-foreground text-sm">No items found</p>
               </div>
             )}
           </ScrollArea>
@@ -351,6 +406,8 @@ export const POSSystem = () => {
         <div className="w-80 bg-card border-l flex flex-col">
           <Cart
             items={state.cart}
+            customerName={customerName}
+            onCustomerNameChange={setCustomerName}
             onUpdateQuantity={updateQuantity}
             onRemoveItem={removeItemCompletely}
             onGenerateReceipt={generateReceipt}
@@ -362,6 +419,7 @@ export const POSSystem = () => {
       {/* Receipt Modal */}
       <ReceiptModal
         receipt={state.currentReceipt}
+        shopInfo={shopInfo}
         isOpen={state.isReceiptModalOpen}
         onClose={() => setState(prev => ({ 
           ...prev, 

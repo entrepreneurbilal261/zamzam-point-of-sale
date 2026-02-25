@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Receipt, Clock } from 'lucide-react';
+import { Calendar, Receipt, Clock, RefreshCw } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { useSupabaseReceipts } from '@/hooks/useSupabaseReceipts';
 import { format } from 'date-fns';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -30,8 +31,11 @@ export const TodayOrders = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-4 mb-6">
         <Calendar className="h-6 w-6 text-primary" />
-        <h2 className="text-2xl font-bold">Today's Orders</h2>
-        <p className="font-urdu text-lg text-muted-foreground">آج کے آرڈرز</p>
+        <h2 className="text-base font-bold">Today&apos;s Orders</h2>
+        <Button variant="outline" size="sm" onClick={fetchTodayOrders} disabled={isLoading}>
+          <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
       </div>
 
       {/* Summary Cards */}
@@ -42,8 +46,7 @@ export const TodayOrders = () => {
             <Receipt className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{totalOrders}</div>
-            <p className="font-urdu text-sm text-muted-foreground">کل آرڈرز</p>
+            <div className="text-base font-bold text-blue-600">{totalOrders}</div>
           </CardContent>
         </Card>
 
@@ -53,8 +56,7 @@ export const TodayOrders = () => {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">PKR {totalRevenue.toFixed(2)}</div>
-            <p className="font-urdu text-sm text-muted-foreground">کل آمدن</p>
+            <div className="text-base font-bold text-green-600">PKR {totalRevenue.toFixed(2)}</div>
           </CardContent>
         </Card>
       </div>
@@ -63,21 +65,16 @@ export const TodayOrders = () => {
       <Card>
         <CardHeader>
           <CardTitle>All Orders for {format(new Date(), 'MMMM dd, yyyy')}</CardTitle>
-          <p className="font-urdu text-muted-foreground">
-            {format(new Date(), 'dd MMMM yyyy')} کے تمام آرڈرز
-          </p>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="text-center py-8 text-muted-foreground">
               <p>Loading orders...</p>
-              <p className="font-urdu">آرڈرز لوڈ ہو رہے ہیں...</p>
             </div>
           ) : orders.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <Receipt className="h-16 w-16 mx-auto mb-4 opacity-50" />
               <p>No orders found for today</p>
-              <p className="font-urdu">آج کے لیے کوئی آرڈر نہیں ملا</p>
             </div>
           ) : (
             <ScrollArea className="h-[600px]">
@@ -91,7 +88,7 @@ export const TodayOrders = () => {
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
                           <div>
-                            <CardTitle className="text-lg">Receipt #{order.receipt_number || order.id}</CardTitle>
+                            <CardTitle className="text-sm">Receipt #{order.receipt_number || order.id}</CardTitle>
                             <div className="flex items-center gap-2 mt-1">
                               <Clock className="h-3 w-3 text-muted-foreground" />
                               <span className="text-sm text-muted-foreground">
@@ -99,7 +96,7 @@ export const TodayOrders = () => {
                               </span>
                             </div>
                           </div>
-                          <Badge variant="default" className="text-lg px-3 py-1">
+                          <Badge variant="default" className="text-xs px-2 py-0.5">
                             PKR {order.total.toFixed(2)}
                           </Badge>
                         </div>
@@ -113,9 +110,6 @@ export const TodayOrders = () => {
                             >
                               <div className="flex-1">
                                 <div className="font-medium text-sm">{item.name}</div>
-                                <div className="font-urdu text-xs text-muted-foreground">
-                                  {item.nameUrdu}
-                                </div>
                               </div>
                               <div className="text-right">
                                 <div className="font-semibold text-sm">
